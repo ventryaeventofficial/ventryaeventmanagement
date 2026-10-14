@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Event Invitation & Pass</title>
+  
+  <!-- CDN Libraries for QR Code & Card Image Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color:var(--bg-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* =========================================================
+       THE SINGLE ALL-IN-ONE CARD TO BE DOWNLOADED
+       ========================================================= */
+    #invitationCard {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 1. TOP: Banner Container */
+    .card-banner {
+      width: 100%;
+      height: auto;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-banner img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .banner-text {
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    /* 2. MIDDLE: Reduced Spacing for Text Details */
+    .card-body {
+      padding: 14px 16px 10px; /* Reduced vertical padding */
+      text-align: center;
+    }
+
+    .event-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 6px; /* Tightened margin */
+      line-height: 1.2;
+    }
+
+    .details-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px; /* Tightened spacing */
+      margin-bottom: 10px;
+    }
+
+    .detail-item {
+      font-size: 13.5px;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .card-divider {
+      border: none;
+      border-top: 1px dashed #cbd5e1;
+      margin: 10px 0; /* Tightened margin */
+    }
+
+    .guest-container {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 6px 10px; /* Tightened padding */
+    }
+
+    .guest-label {
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .guest-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #4f46e5;
+      margin-top: 1px;
+    }
+
+    /* 3. BOTTOM: Unique QR Code */
+    .card-footer {
+      background-color: #f1f5f9;
+      padding: 12px 16px; /* Reduced padding */
+      border-top: 2px dashed #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .qr-box {
+      background: #ffffff;
+      padding: 8px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 6px;
+    }
+
+    .qr-box img {
+      display: block;
+      margin: 0 auto;
+    }
+
+    .qr-caption {
+      font-size: 11.5px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    /* Download Action Button */
+    .download-btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px;
+      background-color: #25d366;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+      transition: transform 0.1s ease, background-color 0.2s ease;
+    }
+
+    .download-btn:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    
+    <div id="invitationCard">
+      
+      <!-- 1. TOP: Banner Image / Header -->
+      <div class="card-banner" id="cardBanner">
+        <div class="banner-text" id="bannerTitle">Official Event Pass</div>
+      </div>
+
+      <!-- 2. MIDDLE: Event & Guest Details -->
+      <div class="card-body">
+        <h1 class="event-title" id="eventTitle">Loading Event...</h1>
+        
+        <div class="details-group">
+          <div class="detail-item">📅 <span id="eventDate">--</span></div>
+          <div class="detail-item">📍 <span id="eventVenue">--</span></div>
+        </div>
+
+        <hr class="card-divider" />
+
+        <div class="guest-container">
+          <div class="guest-label">Admit Guest</div>
+          <div class="guest-name" id="guestName">Guest Name</div>
+        </div>
+      </div>
+
+      <!-- 3. BOTTOM: Unique QR Code -->
+      <div class="card-footer">
+        <div class="qr-box">
+          <div id="qrcode"></div>
+        </div>
+        <div class="qr-caption">Scan at entry for official check-in</div>
+      </div>
+
+    </div>
+
+    <!-- Download Trigger Button -->
+    <button class="download-btn" onclick="downloadCard()">
+      📥 Save Pass to Phone
+    </button>
+
+  </div>
+
+  <script src="invitation.js"></script>
+</body>
+</html>

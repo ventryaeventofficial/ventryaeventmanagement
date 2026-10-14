@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Events Dashboard | Ventrya</title>
+  
+  <!-- General Theme & FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+   <link rel="stylesheet" href="styles.css">
+  <!-- Dedicated Dashboard Stylesheet -->
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="/" class="logo">
+        <img src="./images/Logo.png" alt="Ventrya Logo"/>
+      </a>
+      <div class="nav-auth-container">
+        <div id="userMenuContainer" class="user-menu-container">
+          <button id="userProfileBtn" class="user-profile-btn">
+            <img id="userAvatar" src="https://ui-avatars.com/api/?name=User&background=5B1A2D&color=FFFDE6" alt="Profile" class="avatar-img" />
+            <span id="userNameDisplay" class="user-name">Account</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div id="userDropdown" class="user-dropdown hidden">
+            <div class="dropdown-header">
+              <strong id="dropdownUserEmail">loading...</strong>
+            </div>
+            <hr />
+            <a href="/" class="dropdown-item">
+              <i class="fas fa-home"></i> Home
+            </a>
+            <button id="logoutBtn" class="dropdown-item logout-btn">
+              <i class="fas fa-sign-out-alt"></i> Log Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard Main Content -->
+  <main class="dashboard-container">
+    <div class="dashboard-header">
+      <div>
+        <h1>My Events</h1>
+        <p>Manage and track all the events you have published.</p>
+      </div>
+     <button id="openCreateModalBtn" class="btn-primary">
+        <i class="fas fa-plus"></i> Create New Event
+      </button>
+    </div>
+
+    <div class="search-container" style="margin-bottom: 20px;">
+    <input 
+        id="eventSearchInput" 
+        placeholder="Search events by title, location, or description..." 
+        style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid #ccc;"
+    />
+    </div>    
+    <!-- Events Container -->
+    <div id="eventsContainer" class="events-grid">
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin fa-2x spinner"></i>
+        <p>Loading your events...</p>
+      </div>
+    </div>
+
+
+    <!-- Edit Event Modal -->
+<div id="editEventModal" class="modal-overlay hidden" aria-hidden="true">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2>Edit Event</h2>
+      <button id="closeEditModal" class="modal-close-btn" aria-label="Close modal">&times;</button>
+    </div>
+    
+    <form id="editEventForm" class="modal-form">
+      <input type="hidden" id="editEventId" />
+
+      <div class="form-group">
+        <label for="editEventTitle">Event Title</label>
+        <input type="text" id="editEventTitle" required class="form-input" placeholder="e.g. Lagos Tech Summit 2026" />
+      </div>
+
+      <div class="form-group">
+        <label for="editEventDate">Date</label>
+        <input type="date" id="editEventDate" required class="form-input" />
+      </div>
+
+      <div class="form-group">
+        <label for="editEventLocation">Location</label>
+        <input type="text" id="editEventLocation" required class="form-input" placeholder="e.g. Landmark Centre, Victoria Island" />
+      </div>
+
+      <div class="form-group">
+        <label for="editEventDesc">Description</label>
+        <textarea id="editEventDesc" rows="4" class="form-input" placeholder="Briefly describe your event..."></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="cancelEditBtn" class="btn-secondary">Cancel</button>
+        <button type="submit" id="saveEditBtn" class="btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+  </main>
+  
+  <!-- Custom Delete Confirmation Modal -->
+<div id="deleteModal" class="modal-backdrop hidden" inert role="dialog" aria-labelledby="deleteModalTitle">  <div class="modal-card">
+    <div class="modal-header">
+      <h3 id="deleteModalTitle">Delete Event</h3>
+      <button type="button" class="btn-close" id="closeDeleteModal" aria-label="Close modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>Are you sure you want to delete <strong id="deleteEventTitle">this event</strong>?</p>
+      <p style="font-size: 0.85rem; color: #dc2626; margin-top: 6px;">This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
+      <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Event Modal -->
+<div id="createEventModal" class="modal-overlay hidden" aria-hidden="true">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2>Create New Event</h2>
+      <button id="closeCreateModal" class="modal-close-btn" aria-label="Close modal">&times;</button>
+    </div>
+    
+    <form id="createEventForm" class="modal-form">
+      <div class="form-group">
+        <label for="createEventTitle">Event Title</label>
+        <input 
+          type="text" 
+          id="createEventTitle" 
+          required 
+          class="form-input" 
+          placeholder="e.g. Lagos Tech Summit 2026" 
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="createEventDate">Date</label>
+        <input 
+          type="date" 
+          id="createEventDate" 
+          required 
+          class="form-input" 
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="createEventLocation">Location</label>
+        <input 
+          type="text" 
+          id="createEventLocation" 
+          required 
+          class="form-input" 
+          placeholder="e.g. Landmark Centre, Victoria Island" 
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="createEventDesc">Description</label>
+        <textarea 
+          id="createEventDesc" 
+          rows="4" 
+          class="form-input" 
+          placeholder="Briefly describe your event..."
+        ></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="cancelCreateBtn" class="btn-secondary">Cancel</button>
+        <button type="submit" id="saveCreateBtn" class="btn-primary">Create Event</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; Copyright Ventrya. All rights reserved.</p>
+                <p>Developed and Managed by Brandace Inc.</p>
+            </div>
+        </div>
+</footer>
+
+<div id="toastContainer" class="toast-container"></div>
+  <script type="module" src="dashboard.js"></script>
+</body>
+</html>

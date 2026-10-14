@@ -1,0 +1,8 @@
+# Environment files
+.env
+.env.*
+
+# Service account and private keys
+*serviceaccountkey*.json
+*.pem
+*.key

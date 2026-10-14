@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventrya - Event & Conference Guest Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header / Navbar -->
+    <header class="navbar">
+    <div class="container nav-container">
+        <!-- Logo -->
+        <a href="index.html" class="logo">
+            <img src="images/Logo.png" alt="Ventrya Logo">
+        </a>
+
+        <!-- Mobile Controls: Avatar + Hamburger (Visible ONLY on Mobile) -->
+        <div class="mobile-controls">
+            <!-- Mobile User Profile -->
+            <div id="userMenuContainerMobile" class="user-menu-container mobile-user-menu hidden">
+                <button id="userProfileBtnMobile" class="user-profile-btn" aria-expanded="false">
+                    <img id="userAvatarMobile" src="https://ui-avatars.com/api/?name=User&background=random" alt="Profile" class="avatar-img">
+                </button>
+
+                <!-- Mobile Dropdown -->
+                <div id="userDropdownMobile" class="user-dropdown hidden">
+                    <div class="dropdown-header">
+                        <strong class="dropdown-user-email">user@example.com</strong>
+                    </div>
+                    <hr>
+                    <a href="/dashboard.html" class="dropdown-item">
+                        <i class="fas fa-calendar-alt"></i> My Events Dashboard
+                    </a>
+                    <button class="dropdown-item logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Log Out
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hamburger Button -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
+
+        <!-- Navigation Drawer/Menu -->
+        <nav class="nav-menu" id="nav-menu">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#about-us">About Us</a></li>
+                <li><a href="#why-choose-us">Why Ventrya</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#workflow">Workflow</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+
+            <!-- Desktop Actions (Visible ONLY on Desktop) -->
+            <div class="nav-actions">
+                <button type="button" class="btn btn-outline" id="createEventBtn">Create Event</button>
+                <button type="button" class="sign-in" id="openSignUpBtn">Sign Up</button>
+
+                <!-- Desktop User Profile -->
+                <div id="userMenuContainer" class="user-menu-container desktop-user-menu hidden">
+                    <button id="userProfileBtn" class="user-profile-btn" aria-expanded="false">
+                        <img id="userAvatar" src="https://ui-avatars.com/api/?name=User&background=random" alt="Profile" class="avatar-img">
+                        <span id="userNameDisplay" class="user-name">Account</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+
+                    <!-- Desktop Dropdown -->
+                    <div id="userDropdown" class="user-dropdown hidden">
+                        <div class="dropdown-header">
+                            <strong id="dropdownUserEmail">user@example.com</strong>
+                        </div>
+                        <hr>
+                        <a href="/dashboard.html" class="dropdown-item">
+                            <i class="fas fa-calendar-alt"></i> My Events Dashboard
+                        </a>
+                        <button id="logoutBtn" class="dropdown-item logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Log Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero-v2">
+        <div class="container">
+            <!-- Top Grid Layout: Headline Left, Description + CTA Right -->
+            <div class="hero-header-grid">
+                <h1 class="hero-title">Smarter Guest Management.<br>Better Events.</h1>
+                <div class="hero-side-content">
+                    <p class="hero-description">
+                        Everything you need to manage your event guests from invitation to check-in, all in one place.
+                        Plan, invite, organize, track, and welcome your guests with a powerful guest management platform designed to make every event feel effortless.
+                    </p>
+                    <a href="#about-us" class="btn btn-pill">
+                        Discover More <span class="arrow-circle"><i class="fas fa-arrow-right"></i></span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Full-Width Rounded Banner -->
+            <div class="hero-banner-container">
+                <img src="images/heroBG4.jpg" alt="Conference Audience" class="hero-banner-img">
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section class="about-us-section" id="about-us">
+        <div class="container about-container">
+            <!-- Left Side: Visual Image Stack -->
+            <div class="about-image-wrapper">
+                <div class="main-img-box">
+                    <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=80&w=700" alt="Event Team & Stage Setup" class="about-img-main">
+                </div>
+            </div>
+
+            <!-- Right Side: Content & Highlights -->
+            <div class="about-content">
+                <span class="sub-heading">ABOUT VENTRYA</span>
+                <h2>We make managing events easier.</h2>
+                <p class="about-lead">
+                    At Ventrya, we believe event management should be about creating memorable experiences—not getting overwhelmed by guest lists, RSVPs, and check-ins.<br><br>
+                    We built Ventrya to give event organizers a simple, modern platform to manage their guests from invitation to arrival.<br><br>
+                    Whether you're planning a wedding, corporate event, conference, celebration, or private gathering, Ventrya helps you stay organized, save time, and give your guests a seamless experience.
+                </p>
+
+                <!-- Metrics Grid -->
+                <div class="about-stats">
+                    <div class="stat-box">
+                        <h3>Plan better. Manage smarter. Celebrate more.</h3>
+                        <span>Ventrya. Your event, organized.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section id="why-choose-us" class="why-choose-us">
+        <div class="container">
+            <div class="why-header">
+                <span class="why-tagline">WHY CHOOSE VENTRYA</span>
+                <h2>Everything you need. At your Finger-Tips.</h2>
+                <p>Ventrya takes the complexity out of guest management, giving you a simple, reliable way to stay organized and deliver a better experience for your guests.</p>
+            </div>
+            
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-icon"><i class="fa-brands fa-simplybuilt"></i></div>
+                    <h3>Simple & Easy to Use</h3>
+                    <p>Manage your event without complicated tools or confusing processes. Ventrya keeps everything straightforward.</p>
+                </div>
+
+                <div class="why-card">
+                    <div class="why-icon"><i class="fa-solid fa-users"></i></div>
+                    <h3>All Your Guests in One Place</h3>
+                    <p>Keep guest details, RSVPs, categories, seating, and attendance organized from one central dashboard.</p>
+                </div>
+
+                <div class="why-card">
+                    <div class="why-icon"><i class="fa-solid fa-coins"></i></div>
+                    <h3>Save Time & Reduce Stress</h3>
+                    <p>Automate repetitive guest management tasks so you can spend less time on admin and more time focusing on your event.</p>
+                </div>
+
+                <div class="why-card">
+                    <div class="why-icon"><i class="fa-solid fa-wind"></i></div>
+                    <h3>Better Guest Experience</h3>
+                    <p>From the invitation to check-in, create a smooth and professional experience that your guests will appreciate.</p>
+                </div>
+
+                <div class="why-card">
+                    <div class="why-icon"><i class="fa-solid fa-building"></i></div>
+                    <h3>Real-Time Visibility</h3>
+                    <p>Always know who's attending, who's yet to respond, and who's already arrived with up-to-date information at your fingertips.</p>
+                </div>
+
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-headset"></i></div>
+                    <h3>24/7 Dedicated Support</h3>
+                    <p>Our expert support team is available around the clock to assist your live events.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Section -->
+    <section id="features" class="core-features-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>POWERFUL FEATURES. SIMPLE EXPERIENCE.</h2>
+                <p>Everything your event team needs at your finger tips.</p>
+            </div>
+            <div class="features-grid">
+                <div class="grid-card">
+                    <div class="card-icon"><i class="fas fa-user-friends"></i></div>
+                    <h3>Guest Database</h3>
+                    <p>Centralize all your guest information.</p>
+                </div>
+                <div class="grid-card">
+                    <div class="card-icon"><i class="fa-solid fa-reply"></i></div>
+                    <h3>RSVP Tracking</h3>
+                    <p>Monitor confirmations and responses in real time.</p>
+                </div>
+                <div class="grid-card">
+                    <div class="card-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Digital Invitations</h3>
+                    <p>Send professional invitations digitally.</p>
+                </div>
+                <div class="grid-card">
+                    <div class="card-icon"><i class="fa-solid fa-qrcode"></i></div>
+                    <h3>QR Code Invitations</h3>
+                    <p>Give guests a quick and convenient way to check in.</p>
+                </div>
+                <div class="grid-card">
+                    <div class="card-icon"><i class="fa-solid fa-hotel"></i></div>
+                    <h3>Guest Check-In</h3>
+                    <p>Clock in guest and track arrivals as they happen.</p>
+                </div>
+                <div class="grid-card">
+                    <div class="card-icon"><i class="fa-solid fa-chair"></i></div>
+                    <h3>Seating Management</h3>
+                    <p>Organize tables, sections, and assigned seating.</p>
+                </div>
+                <div class="grid-card">
+                    <div class="card-icon"><i class="fa-solid fa-table-list"></i></div>
+                    <h3>Guest Categories</h3>
+                    <p>Segment guests according to your event requirements.</p>
+                </div>
+                <div class="grid-card">
+                    <div class="card-icon"><i class="fa-solid fa-tachograph-digital"></i></div>
+                    <h3>Event Dashboard</h3>
+                    <p>See your most important event information at a glance.</p>
+                </div>
+                <div class="grid-card">
+                    <div class="card-icon"><i class="fa-solid fa-newspaper"></i></div>
+                    <h3>Event Reports</h3>
+                    <p>Understand attendance and guest activity.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process / Simple Workflow Section -->
+    <section class="workflow-section" id="workflow">
+        <div class="container">
+            <div class="workflow-header">
+                <h2>Simple Workflow</h2>
+                <p>From guest listing and RSVPing to digital invitations to door check-ins; everything perfectly seamless.</p>
+            </div>
+
+            <div class="workflow-grid">
+                <div class="workflow-card">
+                    <div class="step-badge">01</div>
+                    <div class="card-content">
+                        <h3>Create Your Event</h3>
+                        <p>Set up your event and add the important details.</p>
+                    </div>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="step-badge">02</div>
+                    <div class="card-content">
+                        <h3>Build Your Guest List</h3>
+                        <p>Import or manually add your guests and organize them into categories.</p>
+                    </div>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="step-badge">03</div>
+                    <div class="card-content">
+                        <h3>Send Invitations</h3>
+                        <p>Share personalized digital invitations with your guests.</p>
+                    </div>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="step-badge">04</div>
+                    <div class="card-content">
+                        <h3>Track RSVPs</h3>
+                        <p>Monitor responses and know exactly who's attending.</p>
+                    </div>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="step-badge">05</div>
+                    <div class="card-content">
+                        <h3>Prepare for Arrival</h3>
+                        <p>Organize seating, guest categories, VIPs, and your registration team.</p>
+                    </div>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="step-badge">06</div>
+                    <div class="card-content">
+                        <h3>Check In Guests</h3>
+                        <p>Scan QR codes or quickly verify guests as they arrive.</p>
+                    </div>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="step-badge">07</div>
+                    <div class="card-content">
+                        <h3>Track Attendance</h3>
+                        <p>See your attendance numbers and guest activity in real time.</p>
+                    </div>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="step-badge">08</div>
+                    <div class="card-content">
+                        <h3>Event Website</h3>
+                        <p>Create a dedicated event photo sharing website for your event along with all the essential details.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+        <div class="container">
+            <div class="faq-header">
+                <span class="sub-heading">FREQUENTLY ASKED QUESTIONS</span>
+                <h2>Got Questions? We've Got Answers.</h2>
+                <p>Everything you need to know about setting up events, ticketing, and managing guests with Ventrya.</p>
+            </div>
+
+            <div class="faq-accordion">
+                <div class="faq-item active">
+                    <button class="faq-question" aria-expanded="true">
+                        <span>What is Ventrya?</span>
+                        <span class="faq-icon"><i class="fas fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Ventrya is an event management platform that helps organizers manage guest lists, invitations, RSVPs, seating, check-in, and attendance from one centralized platform.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>What types of events can I manage with Ventrya?</span>
+                        <span class="faq-icon"><i class="fas fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Ventrya can be used for weddings, birthdays, corporate events, conferences, church events, galas, private parties, networking events, and many other types of gatherings.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Can guests RSVP online?</span>
+                        <span class="faq-icon"><i class="fas fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. Guests can respond to digital invitations and confirm whether they will be attending your event.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Can I track who has confirmed?</span>
+                        <span class="faq-icon"><i class="fas fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. Your dashboard allows you to monitor confirmed, pending, and declined RSVPs.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Does Ventrya support QR code check-in?</span>
+                        <span class="faq-icon"><i class="fas fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. QR-based check-in can help your team quickly verify guests and record attendance at the venue.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Can I organize guests by category?</span>
+                        <span class="faq-icon"><i class="fas fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. You can organize guests into categories such as VIP, family, friends, speakers, sponsors, staff, and more.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Can I manage seating arrangements?</span>
+                        <span class="faq-icon"><i class="fas fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. Ventrya can help you organize guests according to tables, sections, or assigned seating.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Can my event team use Ventrya?</span>
+                        <span class="faq-icon"><i class="fas fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. Ventrya can support event teams by giving the right people access to the information and tools they need to manage the event.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section" id="newsletter">
+        <div class="container">
+            <div class="newsletter-card">
+                <div class="newsletter-circle circle-1"></div>
+                <div class="newsletter-circle circle-2"></div>
+
+                <div class="newsletter-content">
+                    <h2>Subscribe to Our Newsletter</h2>
+                    <p>Get the latest event trends, product updates, and exclusive tips delivered straight to your inbox.</p>
+                    
+                    <form class="newsletter-form" id="newsletterForm" onsubmit="return false;">
+                        <div class="input-group">
+                            <i class="far fa-envelope input-icon"></i>
+                            <input type="email" id="emailInput" placeholder="Enter your email address" required>
+                            <button type="submit" class="btn btn-primary btn-subscribe">
+                                Subscribe <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        <div class="form-feedback" id="formFeedback">
+                            <i class="fas fa-check-circle"></i> Thank you for subscribing! Check your inbox soon.
+                        </div>
+                    </form>
+                    <span class="privacy-note"><i class="fas fa-lock"></i> We respect your privacy. Unsubscribe at any time.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-main">
+            <div class="footer-col footer-brand">
+                <a href="index.html" class="footer-logo">
+                    <img src="images/Logo.png" alt="Ventrya Logo">
+                </a>
+                <p>
+                    Smarter Guest Management. Better Events.
+                    Manage your guests, track RSVPs, simplify check-in, and create a seamless event experience, all in one place.
+                </p>
+                <div class="social-icons">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#features">Guest Management</a></li>
+                    <li><a href="#features">Digital Invitations</a></li>
+                    <li><a href="#features">RSVP Management</a></li>
+                    <li><a href="#features">Guest Check-In</a></li>
+                    <li><a href="#features">QR Code Check-In</a></li>
+                    <li><a href="#features">Seating Management</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#about-us">About Us</a></li>
+                    <li><a href="#why-choose-us">Why Ventrya</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#workflow">Workflow</a></li>
+                    <li><a href="#faq">FAQs</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Event Planning Tips</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col footer-contact">
+                <h4>Contact Us</h4>
+                <a href="#" class="btn btn-primary btn-contact">Get in touch</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; Copyright Ventrya. All rights reserved.</p>
+                <p>Developed and Managed by Brandace Inc.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- 1. Authentication Modal -->
+<!-- Inside <div class="auth-modal-overlay" id="authModal"> -->
+<div class="auth-modal-overlay" id="authModal" aria-hidden="true">
+    <div class="auth-modal-card">
+        <button class="modal-close-btn" id="closeAuthModal" aria-label="Close modal">&times;</button>
+        <div class="modal-header">
+            <h3 id="authModalTitle">Create Your Account</h3>
+            <p id="authModalSubtitle">Sign up or log in to host and manage events.</p>
+        </div>
+
+        <!-- Google Sign-In Button -->
+        <button type="button" class="google-btn" id="googleAuthBtn">
+            <svg class="google-icon" viewBox="0 0 24 24" width="18" height="18">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            Continue with Google
+        </button>
+
+        <!-- Divider -->
+        <div class="auth-divider">
+            <span>OR</span>
+        </div>
+
+        <!-- Email/Password Form -->
+        <form id="authForm" class="auth-form">
+            <div class="form-group">
+                <label for="authEmail">Email Address</label>
+                <input type="email" id="authEmail" placeholder="name@company.com" required>
+            </div>
+            <div class="form-group">
+                <label for="authPassword">Password</label>
+                <input type="password" id="authPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit" id="authSubmitBtn" class="btn btn-primary btn-block">Sign Up</button>
+        </form>
+
+        <!-- Toggle between Sign Up & Sign In inside Modal -->
+        <div style="margin-top: 16px; text-align: center; font-size: 0.9rem;">
+            <span id="authToggleText">Already have an account?</span>
+            <button type="button" id="toggleAuthModeBtn" style="background: none; border: none; color: #5B1A2D; font-weight: 600; cursor: pointer; text-decoration: underline; margin-left: 4px;">Log In</button>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Create Event Modal -->
+<div class="auth-modal-overlay" id="createEventModal" aria-hidden="true">
+    <div class="auth-modal-card event-modal-card">
+        <button class="modal-close-btn" id="closeCreateEventModal" aria-label="Close modal">&times;</button>
+        <div class="modal-header">
+            <h3>Create a New Event</h3>
+            <p>Fill in the details below to publish your event.</p>
+        </div>
+
+        <form id="createEventForm" class="auth-form">
+            <div class="form-group">
+                <label for="eventTitle">Event Title</label>
+                <input type="text" id="eventTitle" placeholder="e.g. Design Tech Summit 2026" required>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="eventDate">Date & Time</label>
+                    <input type="datetime-local" id="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventLocation">Location</label>
+                    <input type="text" id="eventLocation" placeholder="Lekki, Lagos / Online" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="eventDesc">Description</label>
+                <textarea id="eventDesc" rows="3" placeholder="Briefly describe what attendees can expect..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="submitEventBtn">Publish Event</button>
+        </form>
+    </div>
+</div>
+    <div id="toastContainer" class="toast-container"></div>
+    <script type="module" src="script.js"></script>
+</body>
+</html>

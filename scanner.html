@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Check-In Scanner - Ventrya</title>
+
+  <!-- Tailwind CSS CDN (Optional for styling) & Font Awesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- HTML5 QR Code Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #ffffff;
+    }
+    #reader {
+      width: 100%;
+      max-width: 450px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid #334155;
+    }
+    #reader video {
+      object-fit: cover !important;
+      border-radius: 14px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-4">
+
+  <!-- Header / Navigation -->
+  <header class="w-full max-w-md flex justify-between items-center py-3 px-2 border-b border-slate-800">
+    <div class="flex items-center gap-2">
+      <i class="fa-solid fa-qrcode text-indigo-400 text-xl"></i>
+      <span class="font-bold text-lg tracking-wide">Event Check-In</span>
+    </div>
+    <a href="dashboard.html" class="text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition">
+      <i class="fa-solid fa-arrow-left mr-1"></i> Dashboard
+    </a>
+  </header>
+
+  <!-- Main Scanner Area -->
+  <main class="w-full max-w-md flex flex-col items-center my-auto py-6">
+    <div class="text-center mb-4">
+      <h1 class="text-xl font-semibold">Scan Guest Pass</h1>
+      <p class="text-sm text-slate-400 mt-1">Position the QR code inside the frame to check in</p>
+    </div>
+
+    <!-- Camera Video Feed Container -->
+    <div id="reader" class="shadow-2xl bg-slate-900"></div>
+
+    <!-- Status Message Display -->
+    <div id="scanStatus" class="mt-4 text-center text-sm text-slate-400 min-h-[24px]">
+      Camera initialized. Ready to scan...
+    </div>
+  </main>
+
+  <!-- Success / Error Result Modal -->
+  <div id="resultModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 w-full max-w-sm text-center shadow-2xl transform transition-all">
+      
+      <!-- Status Icon -->
+      <div id="modalIconContainer" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i id="modalIcon" class="fa-solid text-3xl"></i>
+      </div>
+
+      <!-- Title & Guest Details -->
+      <h3 id="modalTitle" class="text-xl font-bold mb-1">Check-in Status</h3>
+      <p id="guestName" class="text-lg font-semibold text-indigo-400 mb-1">Guest Name</p>
+      <p id="modalMessage" class="text-sm text-slate-300 mb-6">Details about check-in will appear here.</p>
+
+      <!-- Action Button -->
+      <button id="closeModalBtn" onclick="resumeScanner()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg transition">
+        Scan Next Guest
+      </button>
+    </div>
+  </div>
+
+  <script src="scanner.js"></script>
+</body>
+</html>

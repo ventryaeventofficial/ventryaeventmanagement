@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checked-In Guests - Ventrya</title>
+  <link rel="stylesheet" href="checked-in.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">
+          <i class="fa-solid fa-clipboard-user icon-emerald"></i>
+          Checked-In Guests
+        </h1>
+        <p id="eventHeaderTitle" class="event-subtitle">Event: Loading...</p>
+      </div>
+
+      <div class="header-actions">
+        <a href="dashboard.html" class="btn btn-secondary">
+          <i class="fa-solid fa-arrow-left"></i> Dashboard
+        </a>
+        <button onclick="exportCSV()" class="btn btn-primary">
+          <i class="fa-solid fa-file-csv"></i> Export CSV
+        </button>
+      </div>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Checked In</span>
+        <p id="statCheckedIn" class="stat-value text-emerald">0</p>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Total Guests</span>
+        <p id="statTotal" class="stat-value text-indigo">0</p>
+      </div>
+      <div class="stat-card stat-card-wide">
+        <span class="stat-label">Check-in Rate</span>
+        <p id="statRate" class="stat-value text-light">0%</p>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+      <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Search checked-in guests by name or phone..." 
+        onkeyup="filterTable()" 
+        class="search-input"
+      />
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Guest Name</th>
+              <th>Phone</th>
+              <th>Checked-In Time</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="guestTableBody">
+            <tr>
+              <td colspan="5" class="table-empty-cell">Loading guests...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="checked-in.js"></script>
+</body>
+</html>
