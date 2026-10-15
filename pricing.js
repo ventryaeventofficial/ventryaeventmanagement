@@ -111,7 +111,7 @@ async function verifyPayment(user, ref) {
   try {
     const idToken = await user.getIdToken();
 
-    const response = await fetch(`${API_BASE_URL}/events/verify-payment/${ref}`, {
+    const response = await fetch(`/api/events/verify-payment/${ref}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${idToken}`
