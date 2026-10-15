@@ -270,11 +270,15 @@ app.post('/api/events/:id/checkout', verifyFirebaseToken, async (req, res) => {
       return res.status(400).json({ success: false, error: 'You are already on this plan or a higher tier.' });
     }
 
+    const protocol = req.protocol; // http or https
+    const host = req.get('host');  // ventryaeventmanagementtest.onrender.com (or localhost:5000)
+    const dynamicCallbackUrl = `${protocol}://${host}/pricing.html?eventId=${id}&status=verify`;
+
     const paystackResponse = await axios.post(
       'https://api.paystack.co/transaction/initialize',
       {
         email: req.user.email || 'customer@ventrya.com',
-        amount: netAmountKobo, // Charged with the prorated difference!
+        amount: netAmountKobo, 
         metadata: { 
           eventId: id, 
           organizerUid: req.user.uid, 
@@ -282,7 +286,7 @@ app.post('/api/events/:id/checkout', verifyFirebaseToken, async (req, res) => {
           previousPlan: currentPlanKey,
           creditApplied: currentPlanPriceKobo 
         },
-        callback_url: `http://127.0.0.1:5500/pricing.html?eventId=${id}&status=verify`
+        callback_url: dynamicCallbackUrl
       },
       {
         headers: {
