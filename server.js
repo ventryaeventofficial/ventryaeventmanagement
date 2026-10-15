@@ -8,6 +8,9 @@ const { getAuth } = require('firebase-admin/auth');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const { Resend } = require('resend');
+const path = require('path');
+
+
 
 // Configure Cloudinary
 cloudinary.config({
@@ -15,6 +18,7 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
+
 
 // Initialize Resend with your API key from your .env file
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -145,6 +149,14 @@ const enforceActiveEvent = async (req, res, next) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+// Serve static files from your frontend directory (e.g., 'public' or 'dist')
+app.use(express.static(path.join(__dirname, 'Ventrya')));
+
+// Fallback to index.html for single-page applications if needed
+app.get(/.*/, (req, res) => {
+    res.sendFile(path.join(__dirname, 'Ventrya', 'index.html'));
+});
 
 // ==========================================
 // Event API Routes
