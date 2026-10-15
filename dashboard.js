@@ -50,7 +50,7 @@ const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
 const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
 const deleteEventTitleDisplay = document.getElementById('deleteEventTitle');
 
-const API_BASE_URL = 'http://127.0.0.1:5000/api';
+const API_BASE_URL = '/api';
 let allEventsList = []; // Memory cache for real-time local search filtering
 
 // --- TOAST NOTIFICATION SYSTEM ---
