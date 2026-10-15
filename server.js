@@ -151,12 +151,7 @@ const enforceActiveEvent = async (req, res, next) => {
 };
 
 // Serve static files from your frontend directory (e.g., 'public' or 'dist')
-app.use(express.static(path.join(__dirname, 'Ventrya')));
-
-// Fallback to index.html for single-page applications if needed
-app.get(/.*/, (req, res) => {
-    res.sendFile(path.join(__dirname, 'Ventrya', 'index.html'));
-});
+app.use(express.static(path.join(__dirname)));
 
 // ==========================================
 // Event API Routes
@@ -847,6 +842,11 @@ app.delete('/api/events/:eventId/vendors/:vendorId', verifyFirebaseToken, enforc
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
+});
+
+// 3. Catch-all route to serve index.html for any request that isn't an API route
+app.get(/.*/, (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
