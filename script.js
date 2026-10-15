@@ -236,7 +236,7 @@ createEventForm?.addEventListener('submit', async (e) => {
       description: document.getElementById('eventDesc').value
     };
 
-    const response = await fetch('http://127.0.0.1:5000/api/events', {
+    const response = await fetch('/api/events', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

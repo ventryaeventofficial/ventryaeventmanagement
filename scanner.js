@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api'; // Update to your backend URL
+const API_BASE_URL = '/api'; // Update to your backend URL
 
 let html5QrcodeScanner = null;
 let isProcessing = false;
