@@ -520,9 +520,10 @@ h1, h2, h3, h4 {
     background-color: var(--primary); /* #5B1A2D */
     color: var(--bg-light); /* #FFFDE6 */
     padding: 90px 0;
-    background-image: url(/images/BG.jpg);
+    background-image: url(/images/BG2.jpg);
     background-position: center;
     background-size: cover;
+    background-attachment: fixed;
 }
 
 .why-header {
@@ -708,10 +709,11 @@ h1, h2, h3, h4 {
    ========================================== */
 .workflow-section {
     padding: 100px 0;
-    background-image: url(/images/BG.jpg);
+    background-image: url(/images/BG2.jpg);
     color: var(--bg-light); 
     background-position: center;
     background-size: cover;
+    background-attachment: fixed;
 }
 
 /* Header Typography */
@@ -1062,7 +1064,7 @@ h1, h2, h3, h4 {
 
 .newsletter-card {
     position: relative;
-   background-image: url(/images/BG.jpg);
+   background-image: url(/images/BG2.jpg);
    background-position: center;
    background-size: cover;
     color: var(--bg-light); /* #FFFDE6 */
@@ -1071,6 +1073,7 @@ h1, h2, h3, h4 {
     text-align: center;
     overflow: hidden;
     box-shadow: 0 20px 40px rgba(91, 26, 45, 0.2);
+    background-attachment: fixed;
 }
 
 /* Background Ambient Circles */

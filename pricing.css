@@ -537,7 +537,7 @@ body {
 }
 
 .pricing-cta-card {
-    background-image: url(/images/BG.jpg);
+    background-image: url(/images/BG2.jpg);
     color: var(--bg-light);
     border-radius: 28px;
     padding: 50px 60px;
@@ -546,6 +546,7 @@ body {
     justify-content: space-between;
     gap: 40px;
     box-shadow: 0 20px 40px rgba(91, 26, 45, 0.2);
+    background-attachment: fixed;
 }
 
 .cta-content h2 {
