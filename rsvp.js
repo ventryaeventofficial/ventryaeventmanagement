@@ -66,8 +66,7 @@ function showToast(message, type = 'success') {
       const payload = {
         name: document.getElementById('guestName').value.trim(),
         phone: document.getElementById('guestPhone').value.trim(),
-        plusOneName: document.getElementById('plusOneName').value.trim(),
-        plusOnePhone: document.getElementById('plusOnePhone').value.trim()
+        email: document.getElementById('guestEmail').value.trim(),
       };
 
       try {
