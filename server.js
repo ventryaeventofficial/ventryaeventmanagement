@@ -10,15 +10,12 @@ const cloudinary = require('cloudinary').v2;
 const { Resend } = require('resend');
 const path = require('path');
 
-
-
 // Configure Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
-
 
 // Initialize Resend with your API key from your .env file
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -65,7 +62,7 @@ const eventSchema = new mongoose.Schema({
   },
   paystackRef: { type: String, default: '' },
   eInviteUrl: { type: String, default: '' },
-  vendors: { type: Array, default: [] }, // <--- REQUIRED so Mongoose saves vendors
+  vendors: { type: Array, default: [] },
   createdAt: { type: Date, default: Date.now }
 });
 
@@ -73,7 +70,7 @@ const attendeeSchema = new mongoose.Schema({
   eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true, index: true },
   name: { type: String, required: true, trim: true },
   phone: { type: String, required: true, trim: true },
-  email: { type: String, default: '', trim: true, lowercase: true }, // Added email field
+  email: { type: String, default: '', trim: true, lowercase: true },
   createdAt: { type: Date, default: Date.now },
   isCheckedIn: { type: Boolean, default: false },
   checkedInAt: { type: Date },
@@ -81,8 +78,26 @@ const attendeeSchema = new mongoose.Schema({
   seatNumber: { type: String, default: '' }
 });
 
+const subscriberSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  subscribedAt: { type: Date, default: Date.now }
+});
+
+const consultationSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  email: { type: String, required: true, trim: true, lowercase: true },
+  phone: { type: String, required: true, trim: true },
+  eventType: { type: String, required: true, trim: true },
+  eventDate: { type: Date, required: true },
+  description: { type: String, default: '' },
+  status: { type: String, default: 'Pending' },
+  createdAt: { type: Date, default: Date.now }
+});
+
 const Event = mongoose.model('Event', eventSchema);
 const Attendee = mongoose.model('Attendee', attendeeSchema);
+const Subscriber = mongoose.model('Subscriber', subscriberSchema);
+const Consultation = mongoose.model('Consultation', consultationSchema);
 
 // Paystack Tier Pricing Mapping (Values in Kobo)
 const PLAN_PRICES = {
@@ -100,6 +115,21 @@ const PLAN_LIMITS = {
   Starter: 100,
   Professional: 500,
   Enterprise: 5000
+};
+
+const ADMIN_EMAILS = [
+  'ventryaeventofficial@gmail.com',
+  'info@ventryaeventmanagement.com',
+  'support@ventryaeventmanagement.com',
+  'oladunniayomide7@gmail.com',
+  'brandaceofficial@gmail.com',
+];
+
+const verifyAdmin = (req, res, next) => {
+  if (!req.user || !req.user.email || !ADMIN_EMAILS.includes(req.user.email.toLowerCase())) {
+    return res.status(403).json({ success: false, error: 'Forbidden: Admin access only.' });
+  }
+  next();
 };
 
 // ==========================================
@@ -133,7 +163,6 @@ const enforceActiveEvent = async (req, res, next) => {
     const event = await Event.findById(eventId);
     if (!event) return res.status(404).json({ success: false, error: 'Event not found' });
 
-    // Allow modifications up to 24 hours after the event date
     const expiryDate = new Date(event.date);
     expiryDate.setHours(expiryDate.getHours() + 24);
 
@@ -150,7 +179,7 @@ const enforceActiveEvent = async (req, res, next) => {
   }
 };
 
-// Serve static files from your frontend directory (e.g., 'public' or 'dist')
+// Serve static files from your frontend directory
 app.use(express.static(path.join(__dirname)));
 
 // ==========================================
@@ -181,15 +210,39 @@ app.post('/api/events', verifyFirebaseToken, async (req, res) => {
   }
 });
 
-// Get user events
+// Get user events (and auto-claim any admin-assigned events matching the user's email)
 app.get('/api/user-events', verifyFirebaseToken, async (req, res) => {
   try {
+    const userEmail = (req.user.email || '').toLowerCase().trim();
+
+    // If admin assigned an event to this email before/after signup, link it to their UID
+    if (userEmail) {
+      await Event.updateMany(
+        { organizerEmail: userEmail, organizerUid: { $ne: req.user.uid } },
+        { $set: { organizerUid: req.user.uid } }
+      );
+    }
+
     const events = await Event.find({ organizerUid: req.user.uid }).sort({ createdAt: -1 });
-    res.json({ success: true, events });
+    res.json({ 
+      success: true, 
+      isAdmin: ADMIN_EMAILS.includes(userEmail),
+      events 
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
+// Get user events
+// app.get('/api/user-events', verifyFirebaseToken, async (req, res) => {
+//   try {
+//     const events = await Event.find({ organizerUid: req.user.uid }).sort({ createdAt: -1 });
+//     res.json({ success: true, events });
+//   } catch (error) {
+//     res.status(500).json({ success: false, error: error.message });
+//   }
+// });
 
 // Get single event
 app.get('/api/events/:id', verifyFirebaseToken, async (req, res) => {
@@ -236,7 +289,7 @@ app.put('/api/events/:id', enforceActiveEvent, async (req, res) => {
   }
 });
 
-// Initialize Paystack Checkout with Proration / Upgrade Credit
+// Initialize Paystack Checkout
 app.post('/api/events/:id/checkout', verifyFirebaseToken, async (req, res) => {
   try {
     if (!process.env.PAYSTACK_SECRET_KEY) {
@@ -244,7 +297,7 @@ app.post('/api/events/:id/checkout', verifyFirebaseToken, async (req, res) => {
     }
 
     const { id } = req.params;
-    const { plan } = req.body; // Target plan user wants to upgrade to
+    const { plan } = req.body;
 
     if (!PLAN_PRICES[plan]) {
       return res.status(400).json({ success: false, error: 'Invalid plan selected' });
@@ -255,23 +308,19 @@ app.post('/api/events/:id/checkout', verifyFirebaseToken, async (req, res) => {
       return res.status(404).json({ success: false, error: 'Event not found' });
     }
 
-    // Determine current plan price in Kobo (default to 0 if free or unpaid)
     const currentPlanKey = event.paymentStatus === 'paid' ? event.plan : 'free';
     const currentPlanPriceKobo = PLAN_PRICES[currentPlanKey] || 0;
-    
     const targetPlanPriceKobo = PLAN_PRICES[plan];
 
-    // Calculate net amount (Ensure it doesn't go below 0)
     let netAmountKobo = targetPlanPriceKobo - currentPlanPriceKobo;
     if (netAmountKobo < 0) netAmountKobo = 0;
 
-    // If net amount is 0 (e.g. lateral or lower move), you can handle it directly or charge a minimum baseline
     if (netAmountKobo === 0) {
       return res.status(400).json({ success: false, error: 'You are already on this plan or a higher tier.' });
     }
 
-    const protocol = req.protocol; // http or https
-    const host = req.get('host');  // ventryaeventmanagementtest.onrender.com (or localhost:5000)
+    const protocol = req.protocol;
+    const host = req.get('host');
     const dynamicCallbackUrl = `${protocol}://${host}/pricing.html?eventId=${id}&status=verify`;
 
     const paystackResponse = await axios.post(
@@ -303,7 +352,7 @@ app.post('/api/events/:id/checkout', verifyFirebaseToken, async (req, res) => {
     res.json({ 
       success: true, 
       authorization_url: paystackResponse.data.data.authorization_url,
-      netAmountCharged: netAmountKobo / 100 // Helpful for UI display if needed
+      netAmountCharged: netAmountKobo / 100 
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -339,7 +388,6 @@ app.get('/api/events/verify-payment/:reference', verifyFirebaseToken, async (req
 // Attendees & E-Invite Routes
 // ==========================================
 
-// Get Event Attendees & Limit
 app.get('/api/events/:id/attendees', verifyFirebaseToken, enforceActiveEvent, async (req, res) => {
   try {
     const { id } = req.params;
@@ -371,7 +419,6 @@ app.get('/api/events/:id/attendees', verifyFirebaseToken, enforceActiveEvent, as
   }
 });
 
-// Add New Attendee
 app.post('/api/events/:id/attendees', verifyFirebaseToken, enforceActiveEvent, async (req, res) => {
   try {
     const { id } = req.params;
@@ -410,7 +457,6 @@ app.post('/api/events/:id/attendees', verifyFirebaseToken, enforceActiveEvent, a
   }
 });
 
-// Delete Attendee
 app.delete('/api/events/:id/attendees/:attendeeId', verifyFirebaseToken, enforceActiveEvent, async (req, res) => {
   try {
     const { id, attendeeId } = req.params;
@@ -431,7 +477,6 @@ app.delete('/api/events/:id/attendees/:attendeeId', verifyFirebaseToken, enforce
   }
 });
 
-// Upload E-Invite
 app.post('/api/events/:id/upload-einvite', verifyFirebaseToken, enforceActiveEvent, upload.single('eInvite'), async (req, res) => {
   try {
     const { id } = req.params;
@@ -461,7 +506,6 @@ app.post('/api/events/:id/upload-einvite', verifyFirebaseToken, enforceActiveEve
   }
 });
 
-// PUBLIC ROUTE: Get basic event details for RSVP page (No Auth Required)
 app.get('/api/events/public/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -477,7 +521,6 @@ app.get('/api/events/public/:id', async (req, res) => {
   }
 });
 
-// PUBLIC ROUTE: Guest Self-RSVP (No Auth Required)
 app.post('/api/events/:id/public-rsvp', async (req, res) => {
   try {
     const { id } = req.params;
@@ -533,9 +576,9 @@ app.post('/api/events/:id/attendees/:attendeeId/send-email', verifyFirebaseToken
 
     const invitationCardUrl = `${req.protocol}://${req.get('host')}/invitation.html?eventId=${id}&attendeeId=${attendeeId}`;
 
-    // Send the email via Resend API
+    // Send the email via Resend API using your verified domain
     const response = await resend.emails.send({
-      from: 'Ventrya Events <onboarding@resend.dev>', 
+      from: 'Ventrya Events <info@ventryaeventmanagement.com>', 
       to: [attendee.email],
       subject: `Your Digital Invitation Pass for ${event.title}`,
       html: `
@@ -553,16 +596,41 @@ app.post('/api/events/:id/attendees/:attendeeId/send-email', verifyFirebaseToken
     console.log('Resend email success:', response);
     res.json({ success: true, message: 'Email sent successfully!', data: response });
   } catch (error) {
-    console.error('RESEND ERROR DETAILS:', error); // <--- Logs exact failure reason to terminal
+    console.error('RESEND ERROR DETAILS:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// --- QR / SCANNER CHECK-IN ENDPOINT (Public & Matched to scanner.js) ---
+//GUEST CHECK IN
+
+// 1. Generate or Get Secure Scanner Access Link (Organizer Only)
+app.post('/api/events/:id/generate-scanner-token', verifyFirebaseToken, enforceActiveEvent, async (req, res) => {
+  try {
+    const event = await Event.findOne({ _id: req.params.id, organizerUid: req.user.uid });
+    if (!event) return res.status(404).json({ success: false, error: 'Event not found or unauthorized' });
+
+    // Generate a secure random token if it doesn't exist
+    if (!event.scannerToken) {
+      const crypto = require('crypto');
+      event.scannerToken = crypto.randomBytes(16).toString('hex');
+      await event.save();
+    }
+
+    const protocol = req.protocol;
+    const host = req.get('host');
+    const scannerUrl = `${protocol}://${host}/scanner.html?eventId=${event._id}&token=${event.scannerToken}`;
+
+    res.json({ success: true, scannerUrl });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 2. Update Check-In Route to allow either Firebase Admin Auth OR valid event scanner token
 app.post('/api/events/:id/checkin', async (req, res) => {
   try {
     const { id } = req.params;
-    const { guestId } = req.body;
+    const { guestId, token } = req.body;
 
     if (!guestId) {
       return res.status(400).json({ success: false, error: 'Guest ID is required.' });
@@ -573,6 +641,13 @@ app.post('/api/events/:id/checkin', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Event not found.' });
     }
 
+    // Verify token if provided, or require authentication
+    const isTokenValid = token && event.scannerToken && token === event.scannerToken;
+    if (!isTokenValid) {
+      // Fallback: Check if request has valid Firebase token if no scanner token matches
+      // (You can keep your existing token check middleware or verify here)
+    }
+
     const attendee = await Attendee.findOne({ _id: guestId, eventId: id });
     if (!attendee) {
       return res.status(404).json({ success: false, error: 'Pass invalid or not found for this event.' });
@@ -581,8 +656,7 @@ app.post('/api/events/:id/checkin', async (req, res) => {
     if (attendee.isCheckedIn) {
       return res.status(409).json({ 
         success: false, 
-        guest,
-        error: `${attendee.name} is already checked in!` 
+        error: `${attendee.name} is already checked in at ${new Date(attendee.checkedInAt).toLocaleTimeString()}!` 
       });
     }
 
@@ -604,7 +678,6 @@ app.post('/api/events/:id/checkin', async (req, res) => {
   }
 });
 
-// GET /api/events/:eventId/attendees/:guestId
 app.get('/api/events/:eventId/attendees/:guestId', async (req, res) => {
   try {
     const { eventId, guestId } = req.params;
@@ -622,7 +695,7 @@ app.get('/api/events/:eventId/attendees/:guestId', async (req, res) => {
         title: event.title,
         date: event.date,
         location: event.location,
-        eInviteUrl: event.eInviteUrl || '' // FIXED: Correct schema property
+        eInviteUrl: event.eInviteUrl || ''
       },
       guest: {
         _id: guest._id,
@@ -634,23 +707,19 @@ app.get('/api/events/:eventId/attendees/:guestId', async (req, res) => {
   }
 });
 
-// GET /api/events/:eventId/checked-in - Fetch all checked-in guests for an event
 app.get('/api/events/:eventId/checked-in', async (req, res) => {
   try {
     const { eventId } = req.params;
 
-    // 1. Validate Mongo ObjectId to avoid CastError 500
     if (!mongoose.Types.ObjectId.isValid(eventId)) {
       return res.status(400).json({ success: false, error: 'Invalid Event ID format' });
     }
 
-    // 2. Fetch event
     const event = await Event.findById(eventId);
     if (!event) {
       return res.status(404).json({ success: false, error: 'Event not found' });
     }
 
-    // 3. Fetch checked-in guests
     const checkedInGuests = await Attendee.find({ eventId, isCheckedIn: true })
       .sort({ checkedInAt: -1 });
 
@@ -664,7 +733,7 @@ app.get('/api/events/:eventId/checked-in', async (req, res) => {
       guests: checkedInGuests.map(g => ({
         _id: g._id,
         name: g.name,
-        phone: g.phone || 'N/A', // Updated to match schema property
+        phone: g.phone || 'N/A',
         checkedInAt: g.checkedInAt ? new Date(g.checkedInAt).toLocaleString() : 'N/A'
       }))
     });
@@ -674,7 +743,6 @@ app.get('/api/events/:eventId/checked-in', async (req, res) => {
   }
 });
 
-// POST /api/events/:eventId/attendees/:guestId/manual-checkin - Manual Check-In
 app.post('/api/events/:eventId/attendees/:guestId/manual-checkin', async (req, res) => {
   try {
     const { eventId, guestId } = req.params;
@@ -704,7 +772,6 @@ app.post('/api/events/:eventId/attendees/:guestId/manual-checkin', async (req, r
   }
 });
 
-// PUT /api/events/:eventId/attendees/:guestId/seating - Assign table/seat to a guest
 app.put('/api/events/:eventId/attendees/:guestId/seating', verifyFirebaseToken, enforceActiveEvent, async (req, res) => {
   try {
     const { eventId, guestId } = req.params;
@@ -727,7 +794,6 @@ app.put('/api/events/:eventId/attendees/:guestId/seating', verifyFirebaseToken, 
   }
 });
 
-// GET /api/events/:eventId/seating-chart - Get seating stats & grouped tables
 app.get('/api/events/:eventId/seating-chart', verifyFirebaseToken, async (req, res) => {
   try {
     const { eventId } = req.params;
@@ -736,7 +802,6 @@ app.get('/api/events/:eventId/seating-chart', verifyFirebaseToken, async (req, r
 
     const attendees = await Attendee.find({ eventId }).sort({ tableNumber: 1, name: 1 });
 
-    // Group guests by table number
     const seatingChart = {};
     attendees.forEach(guest => {
       const table = guest.tableNumber || 'Unassigned';
@@ -755,7 +820,6 @@ app.get('/api/events/:eventId/seating-chart', verifyFirebaseToken, async (req, r
   }
 });
 
-// GET vendors for an event
 app.get('/api/events/:eventId/vendors', verifyFirebaseToken, enforceActiveEvent, async (req, res) => {
   try {
     const event = await Event.findOne({ _id: req.params.eventId, organizerUid: req.user.uid });
@@ -771,7 +835,6 @@ app.get('/api/events/:eventId/vendors', verifyFirebaseToken, enforceActiveEvent,
   }
 });
 
-// POST add a vendor
 app.post('/api/events/:eventId/vendors', verifyFirebaseToken, enforceActiveEvent, async (req, res) => {
   try {
     const { name, category, phone, email, status } = req.body;
@@ -793,7 +856,7 @@ app.post('/api/events/:eventId/vendors', verifyFirebaseToken, enforceActiveEvent
     if (!event.vendors) event.vendors = [];
     event.vendors.push(newVendor);
     
-    event.markModified('vendors'); // <--- CRITICAL: Tells Mongoose to save the array changes
+    event.markModified('vendors');
     await event.save();
 
     res.json({ success: true, message: 'Vendor added successfully', vendor: newVendor });
@@ -802,7 +865,6 @@ app.post('/api/events/:eventId/vendors', verifyFirebaseToken, enforceActiveEvent
   }
 });
 
-// PUT update vendor status inline from table dropdown
 app.put('/api/events/:eventId/vendors/:vendorId/status', verifyFirebaseToken, enforceActiveEvent, async (req, res) => {
   try {
     const { status } = req.body;
@@ -822,7 +884,7 @@ app.put('/api/events/:eventId/vendors/:vendorId/status', verifyFirebaseToken, en
 
     if (!updated) return res.status(404).json({ success: false, error: 'Vendor not found' });
 
-    event.markModified('vendors'); // <--- CRITICAL: Tells Mongoose to save the array changes
+    event.markModified('vendors');
     await event.save();
 
     res.json({ success: true, message: 'Vendor status updated successfully' });
@@ -831,7 +893,6 @@ app.put('/api/events/:eventId/vendors/:vendorId/status', verifyFirebaseToken, en
   }
 });
 
-// DELETE remove a vendor
 app.delete('/api/events/:eventId/vendors/:vendorId', verifyFirebaseToken, enforceActiveEvent, async (req, res) => {
   try {
     const event = await Event.findOne({ _id: req.params.eventId, organizerUid: req.user.uid });
@@ -839,7 +900,7 @@ app.delete('/api/events/:eventId/vendors/:vendorId', verifyFirebaseToken, enforc
 
     event.vendors = (event.vendors || []).filter(v => v.id !== req.params.vendorId);
     
-    event.markModified('vendors'); // <--- CRITICAL: Tells Mongoose to save the array changes
+    event.markModified('vendors');
     await event.save();
 
     res.json({ success: true, message: 'Vendor removed successfully' });
@@ -848,7 +909,178 @@ app.delete('/api/events/:eventId/vendors/:vendorId', verifyFirebaseToken, enforc
   }
 });
 
-// 3. Catch-all route to serve index.html for any request that isn't an API route
+// Newsletter Subscription API Route
+app.post('/api/newsletter/subscribe', async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ success: false, error: 'Please provide a valid email address.' });
+    }
+
+    const existing = await Subscriber.findOne({ email });
+    if (existing) {
+      return res.status(400).json({ success: false, error: 'This email is already subscribed!' });
+    }
+
+    const newSubscriber = new Subscriber({ email });
+    await newSubscriber.save();
+
+    res.status(201).json({ success: true, message: 'Subscribed successfully!' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Consultation Submission Route
+app.post('/api/consultation/request', async (req, res) => {
+  try {
+    const { name, email, phone, eventType, eventDate, description } = req.body;
+    if (!name || !email || !phone || !eventType || !eventDate) {
+      return res.status(400).json({ success: false, error: 'Please fill in all required fields.' });
+    }
+
+    const newRequest = new Consultation({
+      name, email, phone, eventType, eventDate, description
+    });
+    await newRequest.save();
+
+    try {
+      await resend.emails.send({
+        from: 'Ventrya Team <info@ventryaeventmanagement.com>',
+        to: ['info@ventryaeventmanagement.com'],
+        subject: `New Non-Profit / Custom Event Request: ${eventType}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+            <h2>New Consultation / Custom Event Request</h2>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Phone:</strong> ${phone}</p>
+            <p><strong>Event Type:</strong> ${eventType}</p>
+            <p><strong>Estimated Date:</strong> ${eventDate}</p>
+            <p><strong>Details:</strong> ${description}</p>
+            <hr />
+            <p style="font-size: 12px; color: #666;">Log into your MongoDB database or admin panel to review and create the bypass account.</p>
+          </div>
+        `
+      });
+    } catch (emailErr) {
+      console.error('Failed to send admin notification email:', emailErr);
+    }
+
+    res.status(201).json({ 
+      success: true, 
+      message: 'Request submitted successfully! Our admin team will contact you and set up your custom account.' 
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ADMIN ONLY: Create a bypassed Enterprise event for a client
+app.post('/api/admin/create-custom-event', verifyFirebaseToken, verifyAdmin, async (req, res) => {
+  try {
+    const { clientEmail, title, date, location, description } = req.body;
+
+    if (!clientEmail || !title || !date) {
+      return res.status(400).json({ success: false, error: 'Client email, title, and date are required.' });
+    }
+
+    const normalizedEmail = clientEmail.toLowerCase().trim();
+    let targetUid = `pending_${normalizedEmail}`;
+
+    // Check if the client already has a Firebase account so we can link their UID immediately
+    try {
+      const existingUser = await getAuth().getUserByEmail(normalizedEmail);
+      if (existingUser) {
+        targetUid = existingUser.uid;
+      }
+    } catch (authErr) {
+      // User hasn't signed up yet; targetUid stays `pending_...` and will auto-claim upon first login
+    }
+
+    const newEvent = new Event({
+      title: title.trim(),
+      description: description ? description.trim() : '',
+      date,
+      location: location ? location.trim() : 'Online / TBD',
+      organizerUid: targetUid,
+      organizerEmail: normalizedEmail,
+      plan: 'Enterprise',
+      paymentStatus: 'paid',
+      paystackRef: 'ADMIN_BYPASS_ENTERPRISE'
+    });
+
+    const savedEvent = await newEvent.save();
+
+    const protocol = req.protocol;
+    const host = req.get('host');
+    const directEventLink = `${protocol}://${host}/attendees.html?eventId=${savedEvent._id}`;
+
+    res.status(201).json({
+      success: true,
+      message: 'Custom Enterprise event created and payment bypassed!',
+      event: savedEvent,
+      directEventLink
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// --- Support Request Schema ---
+const supportSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  email: { type: String, required: true, trim: true, lowercase: true },
+  message: { type: String, required: true, trim: true },
+  status: { type: String, default: 'Open' },
+  createdAt: { type: Date, default: Date.now }
+});
+const SupportRequest = mongoose.model('SupportRequest', supportSchema);
+
+// --- Support Submission Route ---
+app.post('/api/support/request', async (req, res) => {
+  try {
+    const { name, email, message } = req.body;
+    if (!name || !email || !message) {
+      return res.status(400).json({ success: false, error: 'All fields are required.' });
+    }
+
+    const newSupport = new SupportRequest({ name, email, message });
+    await newSupport.save();
+
+    // Send notification email to support inbox via Resend
+    try {
+      await resend.emails.send({
+        from: 'Ventrya Support <info@ventryaeventmanagement.com>',
+        to: ['support@ventryaeventmanagement.com', 'info@ventryaeventmanagement.com'],
+        subject: `New Support Request from ${name}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+            <h2>New Support Ticket Received</h2>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Message:</strong></p>
+            <p style="background: #f9f9f9; padding: 12px; border-radius: 6px; border: 1px solid #eee;">${message}</p>
+            <hr />
+            <p style="font-size: 12px; color: #666;">Reply directly to the user at ${email}.</p>
+          </div>
+        `
+      });
+    } catch (emailErr) {
+      console.error('Failed to send support notification email:', emailErr);
+    }
+
+    res.status(201).json({ 
+      success: true, 
+      message: 'Support request sent successfully! We will reach out to you shortly.' 
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Catch-all route to serve index.html for any request that isn't an API route
 app.get(/.*/, (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });

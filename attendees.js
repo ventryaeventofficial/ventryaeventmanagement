@@ -760,3 +760,45 @@ function applyConcludedMode() {
     btn.style.display = 'none';
   });
 }
+
+// --- GATEKEEPER SCANNER LINK GENERATOR ---
+const generateScannerBtn = document.getElementById('generateScannerLinkBtn');
+const scannerLinkBox = document.getElementById('scannerLinkBox');
+const scannerLinkInput = document.getElementById('scannerLinkInput');
+const copyScannerLinkBtn = document.getElementById('copyScannerLinkBtn');
+
+generateScannerBtn?.addEventListener('click', async () => {
+  try {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    generateScannerBtn.disabled = true;
+    generateScannerBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
+
+    const idToken = await user.getIdToken();
+    const res = await fetch(`${API_BASE_URL}/events/${eventId}/generate-scanner-token`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${idToken}` }
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to generate scanner link');
+
+    if (scannerLinkInput && scannerLinkBox) {
+      scannerLinkInput.value = data.scannerUrl;
+      scannerLinkBox.classList.remove('hidden');
+      showToast('Staff scanner link generated successfully!', 'success');
+    }
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    generateScannerBtn.disabled = false;
+    generateScannerBtn.innerHTML = '<i class="fa-solid fa-key"></i> Generate Staff Scanner Link';
+  }
+});
+
+copyScannerLinkBtn?.addEventListener('click', () => {
+  if (!scannerLinkInput?.value) return;
+  navigator.clipboard.writeText(scannerLinkInput.value);
+  showToast('Staff scanner link copied to clipboard!', 'success');
+});

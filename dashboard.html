@@ -50,9 +50,14 @@
         <h1>My Events</h1>
         <p>Manage and track all the events you have published.</p>
       </div>
-     <button id="openCreateModalBtn" class="btn-primary">
-        <i class="fas fa-plus"></i> Create New Event
-      </button>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button id="openAdminCustomModalBtn" class="btn-secondary hidden" style="background: #1e293b; color: #fff; border: none;">
+          <i class="fas fa-shield-alt"></i> Admin: Custom Enterprise Event
+        </button>
+        <button id="openCreateModalBtn" class="btn-primary">
+          <i class="fas fa-plus"></i> Create New Event
+        </button>
+      </div>
     </div>
 
     <div class="search-container" style="margin-bottom: 20px;">
@@ -187,11 +192,91 @@
   </div>
 </div>
 
+<!-- Admin Custom Bypass Event Modal -->
+<div id="adminCustomEventModal" class="modal-overlay hidden" aria-hidden="true">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2>Create Custom Enterprise Event (Bypass Payment)</h2>
+      <button id="closeAdminCustomModal" class="modal-close-btn" aria-label="Close modal">&times;</button>
+    </div>
+    
+    <form id="adminCustomEventForm" class="modal-form">
+      <div class="form-group">
+        <label for="adminClientEmail">Client Email Address (Links to their account)</label>
+        <input 
+          type="email" 
+          id="adminClientEmail" 
+          required 
+          class="form-input" 
+          placeholder="client@nonprofit.org" 
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="adminEventTitle">Event Title</label>
+        <input 
+          type="text" 
+          id="adminEventTitle" 
+          required 
+          class="form-input" 
+          placeholder="e.g. Annual Charity Gala 2026" 
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="adminEventDate">Date</label>
+        <input 
+          type="date" 
+          id="adminEventDate" 
+          required 
+          class="form-input" 
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="adminEventLocation">Location</label>
+        <input 
+          type="text" 
+          id="adminEventLocation" 
+          required 
+          class="form-input" 
+          placeholder="e.g. Eko Hotel, Lagos" 
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="adminEventDesc">Description</label>
+        <textarea 
+          id="adminEventDesc" 
+          rows="3" 
+          class="form-input" 
+          placeholder="Event details..."
+        ></textarea>
+      </div>
+
+      <!-- Generated Link Box (Shown after creation) -->
+      <div id="generatedClientLinkBox" class="hidden" style="background: #f0fdf4; border: 1px solid #86efac; padding: 12px; border-radius: 8px; margin-bottom: 14px;">
+        <p style="font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 6px;">
+          ✅ Enterprise Event Created! Send this link to the client:
+        </p>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="generatedClientLinkInput" readonly class="form-input" style="font-size: 12px; background: #fff;" />
+          <button type="button" id="copyClientLinkBtn" class="btn-primary" style="white-space: nowrap; padding: 8px 12px;">Copy</button>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="cancelAdminCustomBtn" class="btn-secondary">Close</button>
+        <button type="submit" id="saveAdminCustomBtn" class="btn-primary">Create Enterprise Event</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <footer>
   <div class="footer-bottom">
             <div class="container">
-                <p>&copy; Copyright Ventrya. All rights reserved.</p>
-                <p>Developed and Managed by Brandace Inc.</p>
+                <p>&copy; Copyright Ventrya. All rights reserved. Developed and Managed by Brandace Inc.</p>
             </div>
         </div>
 </footer>

@@ -834,3 +834,113 @@ body {
         text-align: center;
     }
 }
+
+/* --- Modal Overlay & Card Fixes for Pricing Page --- */
+.auth-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.auth-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Hide utility class */
+.auth-modal-overlay.hidden {
+  display: none !important;
+}
+
+.auth-modal-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 480px;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.modal-header {
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.5rem;
+  color: #111;
+}
+
+.modal-header p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Form controls inside modal */
+.auth-form .form-group {
+  margin-bottom: 16px;
+}
+
+.auth-form label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.auth-form .form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.auth-form .form-input:focus {
+  outline: none;
+  border-color: #800080;
+  box-shadow: 0 0 0 3px rgba(128, 0, 128, 0.1);
+}
+
+.btn-block {
+  width: 100%;
+  padding: 12px;
+  background: #800080;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-block:hover {
+  background: #600060;
+}

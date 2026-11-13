@@ -227,6 +227,10 @@ h1, h2, h3, h4 {
 
 /* 4. Reset relative positions inside mobile view breakpoint */
 @media (max-width: 768px) {
+    .logo img{
+    width: 120px;
+    z-index: 2; /* Keeps logo above absolute menu element */
+}
     .nav-links {
         position: static;
         transform: none;
@@ -270,16 +274,25 @@ h1, h2, h3, h4 {
 
 /* Header Grid */
 .hero-header-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
+    /* display: grid;
+    grid-template-columns: 1.2fr 0.8fr; */
+    display: flex;
     gap: 40px;
     align-items: flex-end;
+    justify-content: center;
     margin-bottom: 50px;
 }
 
-.hero-title {
+.hero-title{
+     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.hero-title>h1 {
     font-size: 56px;
-    line-height: 1.1;
+    line-height: 1.0;
     font-weight: 700;
     color: var(--text-dark);
     letter-spacing: -1px;
@@ -293,7 +306,7 @@ h1, h2, h3, h4 {
 }
 
 .hero-description {
-    font-size: 16px;
+    font-size: 20px;
     line-height: 1.6;
     color: var(--text-dark);
     opacity: 0.9;
@@ -542,7 +555,7 @@ h1, h2, h3, h4 {
 
 .why-header h2 {
     color: var(--bg-light);
-    font-size: 36px;
+    font-size: 38px;
     margin: 12px 0;
 }
 
@@ -627,9 +640,8 @@ h1, h2, h3, h4 {
 }
 
 .section-header h2 {
-    font-size: 36px;
+    font-size: 38px;
     color: var(--text-dark); /* #231F20 */
-    font-weight: 800;
     margin-bottom: 10px;
     letter-spacing: -0.5px;
 }
@@ -734,8 +746,7 @@ h1, h2, h3, h4 {
 }
 
 .workflow-header h2 {
-    font-size: 36px;
-    font-weight: 800;
+    font-size: 38px;
     color: #FFFFFF;
     margin: 0 0 16px;
     line-height: 1.05;
@@ -928,8 +939,7 @@ h1, h2, h3, h4 {
 }
 
 .faq-header h2 {
-    font-size: 36px;
-    font-weight: 800;
+    font-size: 38px;
     color: var(--text-dark);
     margin: 8px 0 16px;
     line-height: 1.15;
@@ -1254,8 +1264,8 @@ h1, h2, h3, h4 {
    Footer & Scroll to Top Styles
    ========================================== */
 .site-footer {
-    background-color: var(--bg-light); /* #FFFDE6 */
-    color: var(--text-dark); /* #231F20 */
+    background-color: var(--bg-light);
+    color: var(--text-dark);
     padding-top: 70px;
     border-top: 1px solid rgba(35, 31, 32, 0.08);
 }
@@ -1404,6 +1414,11 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 600px) {
+    .footer-logo img {
+    width: 8rem;
+    margin-bottom: 15px;
+    }
+
     .footer-main {
         grid-template-columns: 1fr;
         gap: 30px;
@@ -1771,4 +1786,26 @@ h1, h2, h3, h4 {
   width: 100%;
   background-color: rgba(255, 255, 255, 0.35);
   transform-origin: left;
+}
+
+/* Shared Legal Modal Styles */
+#legalModalBody::-webkit-scrollbar {
+  width: 6px;
+}
+#legalModalBody::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+#legalModalBody h3 {
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+}
+#legalModalBody h4 {
+  font-size: 1rem;
+  margin-top: 16px;
+  margin-bottom: 6px;
+  color: #222;
+}
+#legalModalBody p {
+  margin-bottom: 12px;
 }

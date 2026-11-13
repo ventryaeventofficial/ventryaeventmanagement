@@ -116,8 +116,28 @@
 </div>
 
 <!-- Starter Features -->
-<a href="scanner.html" data-feature="qrCodeCheckIn" style="text-decoration: none;">
-  <i class="fa-solid fa-qrcode"></i>QR Check-In Scanner</a>
+<!-- QR Scanner & Gatekeeper Access Card -->
+<div class="card-box" style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+  <h3 style="font-size: 15px; color: var(--primary, #800080); margin-bottom: 8px;">
+    <i class="fa-solid fa-qrcode"></i> Gatekeeper QR Scanners
+  </h3>
+  <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">
+    Generate a secure scanner link to give gatekeepers or staff scanning access without logging into your dashboard.
+  </p>
+  
+  <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+    <button id="generateScannerLinkBtn" class="btn btn-secondary" style="font-size: 13px; padding: 8px 14px;">
+      <i class="fa-solid fa-key"></i> Generate Staff Scanner Link
+    </button>
+  </div>
+
+  <div id="scannerLinkBox" class="hidden" style="margin-top: 12px;">
+    <input type="text" id="scannerLinkInput" readonly style="width: 100%; font-size: 12px; padding: 8px; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 6px;" />
+    <button id="copyScannerLinkBtn" class="btn btn-primary" style="font-size: 12px; padding: 6px 12px;">
+      <i class="fa-regular fa-copy"></i> Copy Link for Staff
+    </button>
+  </div>
+</div>
 
 <!-- Professional Features -->
 <a id="viewSeatingChartBtn" href="#" data-feature="seatingManagement" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;" class="btn btn-secondary">

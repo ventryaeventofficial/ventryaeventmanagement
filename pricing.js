@@ -57,12 +57,12 @@ function showToast(message, type = 'success') {
   }, 3500);
 }
 
-if (!currentEventId) {
-  showToast('No event selected. Redirecting to dashboard...', 'error');
-  setTimeout(() => {
-    window.location.href = 'dashboard.html';
-  }, 1500);
-}
+// if (!currentEventId) {
+//   showToast('No event selected. Redirecting to dashboard...', 'error');
+//   setTimeout(() => {
+//     window.location.href = 'dashboard.html';
+//   }, 1500);
+// }
 
 // Watch auth state to run payment verification after Paystack redirect
 onAuthStateChanged(auth, async (user) => {
@@ -77,6 +77,16 @@ async function handlePlanSelection(selectedPlan) {
     const user = auth.currentUser;
     if (!user) {
       showToast('Please sign in first.', 'error');
+      // Optionally trigger your sign-in modal here
+      return;
+    }
+
+    // If they arrived at the pricing page directly from the navbar without an eventId:
+    if (!currentEventId) {
+      showToast('Please select or create an event from your dashboard to apply this plan.', 'info');
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 1500);
       return;
     }
 
@@ -95,7 +105,6 @@ async function handlePlanSelection(selectedPlan) {
     const data = await response.json();
 
     if (response.ok && data.authorization_url) {
-      // Redirect to Paystack's payment page
       window.location.href = data.authorization_url;
     } else {
       showToast(`Payment initiation failed: ${data.error || 'Unknown error'}`, 'error');
@@ -196,4 +205,85 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
+
+  /* ==========================================================================
+     4. "Talk With Our Team" Consultation Modal Mechanics
+     ========================================================================== */
+  const openTeamModalBtn = document.getElementById('openTeamModalBtn');
+  const teamModal = document.getElementById('teamModal');
+  const closeTeamModalBtn = document.getElementById('closeTeamModal');
+  const teamConsultForm = document.getElementById('teamConsultForm');
+  const submitConsultBtn = document.getElementById('submitConsultBtn');
+
+  function openTeamModal() {
+    if (!teamModal) return;
+    teamModal.classList.remove('hidden');
+    teamModal.classList.add('active'); // <--- ADD THIS LINE
+    teamModal.setAttribute('aria-hidden', 'false');
+    setTimeout(() => {
+      document.getElementById('consultName')?.focus();
+    }, 50);
+  }
+
+  function closeTeamModal() {
+    if (!teamModal) return;
+    teamModal.classList.add('hidden');
+    teamModal.classList.remove('active'); // <--- ADD THIS LINE
+    teamModal.setAttribute('aria-hidden', 'true');
+    teamConsultForm?.reset();
+  }
+
+  openTeamModalBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openTeamModal();
+  });
+
+  closeTeamModalBtn?.addEventListener('click', closeTeamModal);
+  teamModal?.addEventListener('click', (e) => {
+    if (e.target === teamModal) closeTeamModal();
+  });
+
+  teamConsultForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const payload = {
+      name: document.getElementById('consultName')?.value.trim(),
+      email: document.getElementById('consultEmail')?.value.trim(),
+      phone: document.getElementById('consultPhone')?.value.trim(),
+      eventType: document.getElementById('consultEventType')?.value.trim(),
+      eventDate: document.getElementById('consultEventDate')?.value,
+      description: document.getElementById('consultDesc')?.value.trim()
+    };
+
+    try {
+      if (submitConsultBtn) {
+        submitConsultBtn.disabled = true;
+        submitConsultBtn.textContent = 'Submitting...';
+      }
+
+      const response = await fetch(`${API_BASE_URL}/consultation/request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        showToast(data.message, 'success');
+        closeTeamModal();
+      } else {
+        showToast(`Submission failed: ${data.error || 'Server error'}`, 'error');
+      }
+    } catch (err) {
+      console.error('Consultation form error:', err);
+      showToast('Failed to connect to server. Please try again.', 'error');
+    } finally {
+      if (submitConsultBtn) {
+        submitConsultBtn.disabled = false;
+        submitConsultBtn.textContent = 'Submit Request';
+      }
+    }
+  });
+
 });

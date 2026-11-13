@@ -6,6 +6,7 @@
     <link rel="icon" type="image/png" href="/images/Logo2.png">
     <title>Pricing Plans & Custom Events - Evanz</title>
     <!-- Font Awesome Icons -->
+      <link rel="Stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,16 +34,7 @@
             <a href="index.html">Home</a>
             <a href="index.html#workflow">Process</a>
             <a href="pricing.html" class="active">Pricing</a>
-            <a href="#faq">FAQ</a>
-            <div class="mobile-header-actions">
-                <a href="#pricing" class="btn btn-primary-nav">Get Started</a>
-            </div>
         </nav>
-
-        <!-- Desktop Action Button -->
-        <div class="header-actions desktop-only">
-            <a href="#pricing" class="btn btn-primary-nav">Get Started</a>
-        </div>
     </div>
 </header>
 
@@ -145,68 +137,6 @@
         </div>
     </section>
 
-    <!-- Detailed Comparison Section -->
-    <section class="comparison-section">
-        <div class="container">
-            <div class="section-title text-center">
-                <span class="pill-tag-alt">FULL SPECS</span>
-                <h2>Detailed Plan Comparison</h2>
-                <p>Explore exact capabilities included across each tier.</p>
-            </div>
-
-            <div class="table-wrapper">
-                <table class="comparison-table">
-                    <thead>
-                        <tr>
-                            <th class="feature-col">Platform Feature</th>
-                            <th>Starter</th>
-                            <th class="highlight-col">Professional</th>
-                            <th>Enterprise</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="feature-col">Attendee Capacity / Event</td>
-                            <td>100 guests</td>
-                            <td class="highlight-col">2,500 guests</td>
-                            <td><strong>Unlimited</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="feature-col">QR Code Scanner App</td>
-                            <td><i class="fas fa-check table-check"></i> Basic</td>
-                            <td class="highlight-col"><i class="fas fa-check table-check"></i> Advanced Multi-device</td>
-                            <td><i class="fas fa-check table-check"></i> Hardware Included</td>
-                        </tr>
-                        <tr>
-                            <td class="feature-col">Custom Branding & White-label</td>
-                            <td><i class="fas fa-times table-cross"></i></td>
-                            <td class="highlight-col"><i class="fas fa-check table-check"></i> Custom Domain</td>
-                            <td><i class="fas fa-check table-check"></i> Full White-label</td>
-                        </tr>
-                        <tr>
-                            <td class="feature-col">Automated Ticket Payouts</td>
-                            <td><i class="fas fa-times table-cross"></i></td>
-                            <td class="highlight-col"><i class="fas fa-check table-check"></i> Instant (Stripe/PayPal)</td>
-                            <td><i class="fas fa-check table-check"></i> Custom Invoicing</td>
-                        </tr>
-                        <tr>
-                            <td class="feature-col">Team Member Licenses</td>
-                            <td>1 Seat</td>
-                            <td class="highlight-col">5 Seats</td>
-                            <td>Unlimited Seats</td>
-                        </tr>
-                        <tr>
-                            <td class="feature-col">Support SLA</td>
-                            <td>Email (24 Hours)</td>
-                            <td class="highlight-col">Priority Live Chat</td>
-                            <td>Dedicated VIP Manager</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
     <!-- Dark Contrast CTA Banner -->
     <section class="pricing-cta-section">
         <div class="container">
@@ -216,97 +146,20 @@
                     <p>We offer discounted rates for non-profits, educational institutions, and multi-year enterprise contracts.</p>
                 </div>
                 <div class="cta-action">
-                    <a href="#" class="btn btn-cta-light">Talk with Our Team <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Minimalist FAQ Accordion Section -->
-    <section class="faq-section" id="faq">
-        <div class="container">
-            <div class="faq-header">
-                <h2>Frequently Asked Questions</h2>
-                <p>Everything you need to know about our plans, billing, and event tools.</p>
-            </div>
-
-            <div class="faq-accordion">
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>Can I change plans or cancel my subscription anytime?</span>
-                        <i class="fas fa-plus faq-icon"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Yes, absolutely. You can easily switch between plans or cancel your subscription at any time directly from your billing dashboard with zero hidden fees.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>Are there any hidden transaction fees for free events?</span>
-                        <i class="fas fa-plus faq-icon"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <p>No! If your event is free, Evanz is 100% free to use. We only collect standard ticketing fees on paid events depending on your plan tier.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>How does entry check-in work for attendees?</span>
-                        <i class="fas fa-plus faq-icon"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Attendees receive a unique QR code on their ticket or email confirmation. You can use our mobile app or web scanner to check them in seamlessly at the door.</p>
-                    </div>
-                </div>
+                <a href="#" id="openTeamModalBtn" class="btn btn-cta-light">Talk with Our Team <i class="fas fa-arrow-right"></i></a>               
+             </div>
             </div>
         </div>
     </section>
 
     <!-- Minimalist Dark Footer -->
     <footer class="site-footer">
-        <div class="container footer-grid">
-            <div class="footer-brand">
-                <!-- <a href="index.html" class="footer-logo">
-                   <img src="/images/Logo.png"/>
-                </a> -->
-                <p>Smarter Guest Management. Better Events.
-            Manage your guests, track RSVPs, simplify check-in, and create a seamless event experience, all in one place.</p>
-            </div>
-
-            <div class="footer-links-group">
-                <div class="footer-col">
-                    <h4>Product</h4>
-                    <a href="index.html">Home</a>
-                    <a href="index.html#workflow">Services</a>
-                    <a href="pricing.html">Pricing</a>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Company</h4>
-                    <a href="#">About Us</a>
-                    <a href="#">Careers</a>
-                    <a href="#">Contact</a>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Resources</h4>
-                    <a href="#faq">FAQ</a>
-                    <a href="#">Documentation</a>
-                    <a href="#">Privacy Policy</a>
-                </div>
-            </div>
-        </div>
+       
+           
 
         <div class="footer-bottom">
             <div class="container footer-bottom-flex">
-                <p>&copy; 2026 Evanz Inc. All rights reserved.</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#"><i class="fab fa-github"></i></a>
-                </div>
+                <p>&copy; 2026 Ventrya. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -315,6 +168,53 @@
     <button id="scrollTopBtn" aria-label="Scroll to top">
         <i class="fas fa-arrow-up"></i>
     </button>
+
+    <!-- Non-Profit & Custom Event Consultation Modal -->
+<div class="auth-modal-overlay hidden" id="teamModal" aria-hidden="true">
+    <div class="auth-modal-card event-modal-card" style="max-width: 550px;">
+        <button class="modal-close-btn" id="closeTeamModal" aria-label="Close modal">&times;</button>
+        <div class="modal-header">
+            <h3>Talk With Our Team</h3>
+            <p>Fill out the details below for non-profit, custom, or large-scale event assistance.</p>
+        </div>
+
+        <form id="teamConsultForm" class="auth-form">
+            <div class="form-group">
+                <label for="consultName">Your Full Name</label>
+                <input type="text" id="consultName" placeholder="e.g. Sarah Johnson" required class="form-input">
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="consultEmail">Email Address</label>
+                    <input type="email" id="consultEmail" placeholder="name@organization.org" required class="form-input">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="consultPhone">Phone Number</label>
+                    <input type="tel" id="consultPhone" placeholder="080XXXXXXXX" required class="form-input">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="consultEventType">Event Type / Organization</label>
+                    <input type="text" id="consultEventType" placeholder="e.g. Non-Profit Charity Gala" required class="form-input">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="consultEventDate">Estimated Date</label>
+                    <input type="date" id="consultEventDate" required class="form-input">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="consultDesc">Event Details & Requirements</label>
+                <textarea id="consultDesc" rows="3" placeholder="Tell us about your expected guest count and custom admin setup needs..." required class="form-input"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="submitConsultBtn">Submit Request</button>
+        </form>
+    </div>
+</div>
     <script type="module" src="pricing.js"></script>
 </body>
 </html>

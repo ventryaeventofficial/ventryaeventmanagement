@@ -4,6 +4,7 @@ import {
   getAuth, 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
@@ -142,18 +143,22 @@ let isSignUpMode = true;
 
 function setAuthMode(signUp) {
   isSignUpMode = signUp;
+  const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+
   if (isSignUpMode) {
     if (authModalTitle) authModalTitle.textContent = "Create Your Account";
     if (authModalSubtitle) authModalSubtitle.textContent = "Sign up to host and manage events.";
     if (authSubmitBtn) authSubmitBtn.textContent = "Sign Up";
     if (authToggleText) authToggleText.textContent = "Already have an account?";
     if (toggleAuthModeBtn) toggleAuthModeBtn.textContent = "Log In";
+    forgotPasswordBtn?.classList.add('hidden');
   } else {
     if (authModalTitle) authModalTitle.textContent = "Welcome Back";
     if (authModalSubtitle) authModalSubtitle.textContent = "Log in to manage your events.";
     if (authSubmitBtn) authSubmitBtn.textContent = "Log In";
     if (authToggleText) authToggleText.textContent = "Don't have an account?";
     if (toggleAuthModeBtn) toggleAuthModeBtn.textContent = "Sign Up";
+    forgotPasswordBtn?.classList.remove('hidden');
   }
 }
 
@@ -165,6 +170,38 @@ openSignUpBtn?.addEventListener('click', () => {
 
 toggleAuthModeBtn?.addEventListener('click', () => {
   setAuthMode(!isSignUpMode);
+});
+
+const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+
+forgotPasswordBtn?.addEventListener('click', async () => {
+  const emailInput = document.getElementById('authEmail');
+  const email = emailInput?.value.trim();
+
+  if (!email) {
+    showToast('Please enter your email address above first, then click Forgot Password.', { type: 'info' });
+    emailInput?.focus();
+    return;
+  }
+
+  try {
+    forgotPasswordBtn.disabled = true;
+    forgotPasswordBtn.textContent = 'Sending...';
+
+    await sendPasswordResetEmail(auth, email);
+    showToast(`Password reset link sent to ${email}! Check your inbox or spam folder.`, { type: 'success' });
+  } catch (err) {
+    if (err.code === 'auth/user-not-found') {
+      showToast('No account found with that email address.', { type: 'error' });
+    } else if (err.code === 'auth/invalid-email') {
+      showToast('Please enter a valid email address.', { type: 'error' });
+    } else {
+      showToast(err.message, { type: 'error' });
+    }
+  } finally {
+    forgotPasswordBtn.disabled = false;
+    forgotPasswordBtn.textContent = 'Forgot Password?';
+  }
 });
 
 // Open Create Event Modal (Prompt Auth if not logged in)
@@ -331,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* ==========================================================================
+ /* ==========================================================================
      3. Newsletter Form Handling
      ========================================================================== */
   const newsletterForm = document.getElementById('newsletterForm');
@@ -339,19 +376,39 @@ document.addEventListener('DOMContentLoaded', () => {
   const formFeedback = document.getElementById('formFeedback');
 
   if (newsletterForm) {
-    newsletterForm.addEventListener('submit', (e) => {
+    newsletterForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      if (emailInput && emailInput.value.trim() !== '') {
-        if (formFeedback) {
-          formFeedback.style.display = 'block';
+      const email = emailInput?.value.trim();
+      if (!email) return;
 
-          setTimeout(() => {
-            formFeedback.style.display = 'none';
-          }, 5000);
+      try {
+        const response = await fetch('/api/newsletter/subscribe', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          if (formFeedback) {
+            formFeedback.innerHTML = `<i class="fas fa-check-circle"></i> ${data.message}`;
+            formFeedback.style.display = 'block';
+
+            setTimeout(() => {
+              formFeedback.style.display = 'none';
+            }, 5000);
+          }
+          emailInput.value = '';
+        } else {
+          alert(data.error || 'Failed to subscribe. Please try again.');
         }
-
-        emailInput.value = '';
+      } catch (err) {
+        console.error('Newsletter subscription error:', err);
+        alert('An error occurred. Please try again later.');
       }
     });
   }
@@ -377,4 +434,185 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  /* ==========================================================================
+     5. Shared Terms of Service & Privacy Policy Modal
+     ========================================================================== */
+  const openTermsBtn = document.getElementById('openTermsBtn');
+  const openPrivacyBtn = document.getElementById('openPrivacyBtn');
+  const legalModal = document.getElementById('legalModal');
+  const closeLegalModal = document.getElementById('closeLegalModal');
+  
+  const tabTermsBtn = document.getElementById('tabTermsBtn');
+  const tabPrivacyBtn = document.getElementById('tabPrivacyBtn');
+  const termsContentSection = document.getElementById('termsContentSection');
+  const privacyContentSection = document.getElementById('privacyContentSection');
+
+  function openLegalModal(showPrivacy = false) {
+    if (!legalModal) return;
+    legalModal.classList.add('active');
+    legalModal.setAttribute('aria-hidden', 'false');
+    
+    if (showPrivacy) {
+      switchToPrivacyTab();
+    } else {
+      switchToTermsTab();
+    }
+  }
+
+  function closeLegalModalHandler() {
+    if (!legalModal) return;
+    legalModal.classList.remove('active');
+    legalModal.setAttribute('aria-hidden', 'true');
+  }
+
+  function switchToTermsTab() {
+    if (termsContentSection && privacyContentSection) {
+      termsContentSection.style.display = 'block';
+      privacyContentSection.style.display = 'none';
+    }
+    if (tabTermsBtn && tabPrivacyBtn) {
+      tabTermsBtn.style.fontWeight = '700';
+      tabTermsBtn.style.color = '#800080';
+      tabTermsBtn.style.borderBottom = '2px solid #800080';
+      
+      tabPrivacyBtn.style.fontWeight = '600';
+      tabPrivacyBtn.style.color = '#666';
+      tabPrivacyBtn.style.borderBottom = '2px solid transparent';
+    }
+    const body = document.getElementById('legalModalBody');
+    if (body) body.scrollTop = 0;
+  }
+
+  function switchToPrivacyTab() {
+    if (termsContentSection && privacyContentSection) {
+      termsContentSection.style.display = 'none';
+      privacyContentSection.style.display = 'block';
+    }
+    if (tabTermsBtn && tabPrivacyBtn) {
+      tabPrivacyBtn.style.fontWeight = '700';
+      tabPrivacyBtn.style.color = '#800080';
+      tabPrivacyBtn.style.borderBottom = '2px solid #800080';
+      
+      tabTermsBtn.style.fontWeight = '600';
+      tabTermsBtn.style.color = '#666';
+      tabTermsBtn.style.borderBottom = '2px solid transparent';
+    }
+    const body = document.getElementById('legalModalBody');
+    if (body) body.scrollTop = 0;
+  }
+
+  openTermsBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openLegalModal(false);
+  });
+
+  openPrivacyBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openLegalModal(true);
+  });
+
+  closeLegalModal?.addEventListener('click', closeLegalModalHandler);
+  
+  legalModal?.addEventListener('click', (e) => {
+    if (e.target === legalModal) closeLegalModalHandler();
+  });
+
+  tabTermsBtn?.addEventListener('click', switchToTermsTab);
+  tabPrivacyBtn?.addEventListener('click', switchToPrivacyTab);
+
+  /* ==========================================================================
+     Support Modal Mechanics & Form Handler
+     ========================================================================== */
+  const openSupportModalBtn = document.getElementById('openSupportModalBtn');
+  const supportModal = document.getElementById('supportModal');
+  const closeSupportModalBtn = document.getElementById('closeSupportModal');
+  const supportForm = document.getElementById('supportForm');
+  const submitSupportBtn = document.getElementById('submitSupportBtn');
+
+  function openSupportModal() {
+    if (!supportModal) return;
+    supportModal.classList.add('active');
+    supportModal.setAttribute('aria-hidden', 'false');
+    document.getElementById('supportName')?.focus();
+  }
+
+  function closeSupportModal() {
+    if (!supportModal) return;
+    supportModal.classList.remove('active');
+    supportModal.setAttribute('aria-hidden', 'true');
+    supportForm?.reset();
+  }
+
+  openSupportModalBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openSupportModal();
+  });
+
+  closeSupportModalBtn?.addEventListener('click', closeSupportModal);
+  supportModal?.addEventListener('click', (e) => {
+    if (e.target === supportModal) closeSupportModal();
+  });
+
+  supportForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const payload = {
+      name: document.getElementById('supportName')?.value.trim(),
+      email: document.getElementById('supportEmail')?.value.trim(),
+      message: document.getElementById('supportMessage')?.value.trim()
+    };
+
+    try {
+      if (submitSupportBtn) {
+        submitSupportBtn.disabled = true;
+        submitSupportBtn.textContent = 'Sending...';
+      }
+
+      const response = await fetch('/api/support/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        showToast(data.message, 'success');
+        closeSupportModal();
+      } else {
+        showToast(`Failed: ${data.error || 'Server error'}`, 'error');
+      }
+    } catch (err) {
+      console.error('Support request error:', err);
+      showToast('Failed to connect to server. Please try again.', 'error');
+    } finally {
+      if (submitSupportBtn) {
+        submitSupportBtn.disabled = false;
+        submitSupportBtn.textContent = 'Send Support Request';
+      }
+    }
+  });
+
+  /* ==========================================================================
+     Password Visibility Toggle
+     ========================================================================== */
+  const togglePasswordBtn = document.getElementById('togglePasswordVisibility');
+  const passwordInput = document.getElementById('authPassword');
+  const passwordEyeIcon = document.getElementById('passwordEyeIcon');
+
+  togglePasswordBtn?.addEventListener('click', () => {
+    const isPassword = passwordInput.type === 'password';
+    passwordInput.type = isPassword ? 'text' : 'password';
+    
+    // Switch between eye and eye-slash icons
+    if (isPassword) {
+      passwordEyeIcon.classList.remove('fa-eye');
+      passwordEyeIcon.classList.add('fa-eye-slash');
+    } else {
+      passwordEyeIcon.classList.remove('fa-eye-slash');
+      passwordEyeIcon.classList.add('fa-eye');
+    }
+  });
+
 });

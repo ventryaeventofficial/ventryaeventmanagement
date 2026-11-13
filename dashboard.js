@@ -198,6 +198,8 @@ async function fetchUserEvents(user) {
 
     const idToken = await user.getIdToken(true);
 
+    console.log(user, idToken);
+
     const response = await fetch(`${API_BASE_URL}/user-events`, {
       method: 'GET',
       headers: {
@@ -208,7 +210,16 @@ async function fetchUserEvents(user) {
 
     const data = await response.json();
 
+
+
     if (response.ok && data.success) {
+      // Show Admin button only if backend confirms this user is an admin
+      const adminBtn = document.getElementById('openAdminCustomModalBtn');
+      if (adminBtn) {
+        if (data.isAdmin) adminBtn.classList.remove('hidden');
+        else adminBtn.classList.add('hidden');
+      }
+
       allEventsList = Array.isArray(data.events) ? data.events : (Array.isArray(data) ? data : []);
       renderEvents(allEventsList);
     } else {
@@ -573,5 +584,94 @@ logoutBtn?.addEventListener('click', async () => {
     window.location.href = 'index.html';
   } catch (err) {
     console.error('Logout error:', err);
+  }
+});
+
+// --- ADMIN CUSTOM BYPASS EVENT LOGIC ---
+const openAdminCustomModalBtn = document.getElementById('openAdminCustomModalBtn');
+const adminCustomEventModal = document.getElementById('adminCustomEventModal');
+const closeAdminCustomModalBtn = document.getElementById('closeAdminCustomModal');
+const cancelAdminCustomBtn = document.getElementById('cancelAdminCustomBtn');
+const adminCustomEventForm = document.getElementById('adminCustomEventForm');
+const saveAdminCustomBtn = document.getElementById('saveAdminCustomBtn');
+const generatedClientLinkBox = document.getElementById('generatedClientLinkBox');
+const generatedClientLinkInput = document.getElementById('generatedClientLinkInput');
+const copyClientLinkBtn = document.getElementById('copyClientLinkBtn');
+
+function openAdminCustomModal() {
+  if (!adminCustomEventModal) return;
+  adminCustomEventForm?.reset();
+  generatedClientLinkBox?.classList.add('hidden');
+  adminCustomEventModal.removeAttribute('aria-hidden');
+  adminCustomEventModal.classList.remove('hidden');
+  adminCustomEventModal.classList.add('active');
+}
+
+function closeAdminCustomModal() {
+  if (!adminCustomEventModal) return;
+  adminCustomEventModal.setAttribute('aria-hidden', 'true');
+  adminCustomEventModal.classList.add('hidden');
+  adminCustomEventModal.classList.remove('active');
+}
+
+openAdminCustomModalBtn?.addEventListener('click', openAdminCustomModal);
+closeAdminCustomModalBtn?.addEventListener('click', closeAdminCustomModal);
+cancelAdminCustomBtn?.addEventListener('click', closeAdminCustomModal);
+
+copyClientLinkBtn?.addEventListener('click', () => {
+  if (!generatedClientLinkInput?.value) return;
+  navigator.clipboard.writeText(generatedClientLinkInput.value);
+  showToast('Client event link copied to clipboard!');
+});
+
+adminCustomEventForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const payload = {
+    clientEmail: document.getElementById('adminClientEmail')?.value.trim(),
+    title: document.getElementById('adminEventTitle')?.value.trim(),
+    date: document.getElementById('adminEventDate')?.value,
+    location: document.getElementById('adminEventLocation')?.value.trim(),
+    description: document.getElementById('adminEventDesc')?.value.trim()
+  };
+
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error('Authentication required.');
+
+    if (saveAdminCustomBtn) {
+      saveAdminCustomBtn.disabled = true;
+      saveAdminCustomBtn.textContent = 'Creating...';
+    }
+
+    const idToken = await user.getIdToken();
+    const response = await fetch(`${API_BASE_URL}/admin/create-custom-event`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${idToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+      showToast('Enterprise event created for client!');
+      if (generatedClientLinkInput && generatedClientLinkBox) {
+        generatedClientLinkInput.value = data.directEventLink;
+        generatedClientLinkBox.classList.remove('hidden');
+      }
+    } else {
+      showToast(data.error || 'Failed to create custom event.', 'error');
+    }
+  } catch (err) {
+    console.error('Admin custom event error:', err);
+    showToast('Error creating custom event.', 'error');
+  } finally {
+    if (saveAdminCustomBtn) {
+      saveAdminCustomBtn.disabled = false;
+      saveAdminCustomBtn.textContent = 'Create Enterprise Event';
+    }
   }
 });
