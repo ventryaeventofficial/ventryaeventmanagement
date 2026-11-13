@@ -179,6 +179,33 @@ const enforceActiveEvent = async (req, res, next) => {
   }
 };
 
+// Toggle Coming Soon mode via .env (COMING_SOON=true)
+app.use((req, res, next) => {
+  if (process.env.COMING_SOON === 'true') {
+    const allowedPaths = [
+      '/coming-soon.html',
+      '/dashboard.html',
+      '/attendees.html',
+      '/scanner.html',
+      '/rsvp.html',
+      '/invitation.html',
+      '/checked-in.html'
+    ];
+    const isAssetOrApi =
+      req.path.startsWith('/api') ||
+      req.path.startsWith('/images') ||
+      req.path.endsWith('.css') ||
+      req.path.endsWith('.js') ||
+      req.path.endsWith('.png') ||
+      req.path.endsWith('.jpg');
+
+    if (!allowedPaths.includes(req.path) && !isAssetOrApi) {
+      return res.sendFile(path.join(__dirname, 'coming-soon.html'));
+    }
+  }
+  next();
+});
+
 // Serve static files from your frontend directory
 app.use(express.static(path.join(__dirname)));
 

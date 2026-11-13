@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" type="image/png" href="images/Logo2.png">
+  <title>Ventrya — Coming Soon</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+      <link rel="Stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"/>
+
+  <style>
+    :root {
+      --ventrya-purple: #800080;
+      --ventrya-plum: #5B1A2D;
+      --ventrya-dark: #16142A;
+      --text-muted: #64748B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #d8c8eb 0%, #e5dcf3 48%, #c9d8ee 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 20px;
+      overflow-x: hidden;
+    }
+
+    /* Outer Frame Wrapper */
+    .frame-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1080px;
+    }
+
+    /* Main Light-Mode Glass/White Card */
+    .coming-soon-card {
+      position: relative;
+      width: 100%;
+      min-height: 620px;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(236, 201, 245, 0.55) 0%, transparent 45%),
+        radial-gradient(circle at 86% 82%, rgba(219, 234, 254, 0.7) 0%, transparent 50%),
+        #fbfaff;
+      border: 8px solid #ffffff;
+      border-radius: 28px;
+      box-shadow: 0 28px 60px -15px rgba(42, 22, 64, 0.16);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px 40px;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* Top Centered Logo Notch */
+    .top-notch {
+      position: relative;
+      background: #ffffff;
+      padding: 14px 42px 18px;
+      border-bottom-left-radius: 26px;
+      border-bottom-right-radius: 26px;
+      box-shadow: 0 6px 20px rgba(91, 26, 45, 0.06);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .top-notch img {
+      height: 34px;
+      width: auto;
+      display: block;
+    }
+
+    /* Center Hero Content */
+    .center-content {
+      position: relative;
+      z-index: 2;
+      max-width: 640px;
+      margin: auto 0;
+      padding: 36px 0;
+    }
+
+    .hero-emoji {
+      font-size: 44px;
+      line-height: 1;
+      margin-bottom: 18px;
+      display: inline-block;
+      filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.12));
+    }
+
+    .eyebrow {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #334155;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 40px;
+      font-weight: 800;
+      color: var(--ventrya-purple);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 34px;
+    }
+
+    /* Pill Notify Me Form */
+    .notify-form {
+      display: inline-flex;
+      align-items: center;
+      background: #ffffff;
+      border: 1.5px solid #e9d5ff;
+      border-radius: 999px;
+      padding: 6px;
+      box-shadow: 0 14px 30px -8px rgba(128, 0, 128, 0.18);
+      max-width: 100%;
+      width: 440px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .notify-form:focus-within {
+      border-color: var(--ventrya-purple);
+      box-shadow: 0 16px 34px -8px rgba(128, 0, 128, 0.28);
+    }
+
+    .icon-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #f5ebff;
+      color: var(--ventrya-purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+
+    .notify-form input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      background: transparent;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: #1e293b;
+      outline: none;
+    }
+
+    .notify-form input::placeholder {
+      color: #94a3b8;
+    }
+
+    .notify-btn {
+      background: var(--ventrya-dark);
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      padding: 11px 22px;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .notify-btn:hover {
+      background: var(--ventrya-plum);
+      transform: translateY(-1px);
+    }
+
+    .notify-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .feedback-msg {
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      min-height: 20px;
+      display: none;
+    }
+
+    /* Bottom Circular Social Buttons */
+    .social-row {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .social-row a {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #64748b;
+      border: 1px solid #ede9fe;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+      transition: all 0.2s ease;
+    }
+
+    .social-row a:hover {
+      background: var(--ventrya-purple);
+      color: #ffffff;
+      border-color: var(--ventrya-purple);
+      transform: translateY(-2px);
+    }
+
+    /* Subtle 3D-Style Floating Decorative Shapes */
+    .shape {
+      position: absolute;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .shape-top-orb {
+      top: -22px;
+      left: 22%;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #f5d0fe, #c084fc);
+      box-shadow: 0 12px 24px rgba(128, 0, 128, 0.22);
+    }
+
+    .shape-left-arc {
+      bottom: 24%;
+      left: 16%;
+      width: 42px;
+      height: 42px;
+      border: 9px solid #a855f7;
+      border-top-color: transparent;
+      border-right-color: transparent;
+      border-radius: 50%;
+      transform: rotate(-18deg);
+      opacity: 0.75;
+    }
+
+    .shape-right-ribbon {
+      bottom: 25%;
+      right: 16%;
+      width: 46px;
+      height: 16px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #800080, #d946ef);
+      transform: rotate(-35deg);
+      box-shadow: 0 10px 20px rgba(128, 0, 128, 0.2);
+      opacity: 0.8;
+    }
+
+    .shape-bottom-orb {
+      bottom: -18px;
+      right: -12px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #f0abfc, #5B1A2D);
+      box-shadow: 0 14px 28px rgba(91, 26, 45, 0.28);
+    }
+
+    @media (max-width: 600px) {
+      .coming-soon-card {
+        min-height: 540px;
+        border-width: 5px;
+        border-radius: 22px;
+        padding: 0 16px 32px;
+      }
+
+      .top-notch {
+        padding: 12px 28px 14px;
+      }
+
+      .top-notch img {
+        height: 28px;
+      }
+
+      .notify-form {
+        width: 100%;
+      }
+
+      .notify-btn {
+        padding: 10px 16px;
+      }
+
+      .shape-left-arc,
+      .shape-right-ribbon {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame-wrapper">
+    <!-- Outer Floating Shapes -->
+    <div class="shape shape-top-orb"></div>
+    <div class="shape shape-bottom-orb"></div>
+
+    <main class="coming-soon-card">
+      <!-- Top Centered Notch with Ventrya Logo -->
+      <header class="top-notch">
+        <img src="images/Logo.png" alt="Ventrya Logo" />
+      </header>
+
+      <!-- Inner Floating Accents -->
+      <div class="shape shape-left-arc"></div>
+      <div class="shape shape-right-ribbon"></div>
+
+      <!-- Center Content -->
+      <section class="center-content">
+        <p class="eyebrow">COMING SOON!</p>
+        <h1>Plan Smarter. Manage Better. Create Unforgettable Events.</h1>
+        <p class="subtitle">
+          We are launching Ventrya Very Soon.<br />
+          Stay Tuned.
+        </p>
+
+        <!-- Notify Me Form (Connected to /api/newsletter/subscribe) -->
+        <form class="notify-form" id="waitlistForm">
+          <span class="icon-circle" aria-hidden="true">
+            <i class="fa-regular fa-envelope"></i>
+          </span>
+          <input
+            type="email"
+            id="waitlistEmail"
+            placeholder="Enter your email address"
+            required
+            aria-label="Email address"
+          />
+          <button type="submit" class="notify-btn" id="waitlistBtn">
+            Notify Me <i class="fa-solid fa-chevron-right" style="font-size: 11px;"></i>
+          </button>
+        </form>
+        <div class="feedback-msg" id="waitlistFeedback"></div>
+      </section>
+
+      <!-- Bottom Social Icons -->
+      <footer class="social-row">
+        <a href="https://www.instagram.com/ventryaofficial/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://facebook.com/ventryaofficial" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://x.com/Ventryaofficial" target="_blank" rel="noopener noreferrer" aria-label="X">
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/ventryaofficial/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <i class="fa-brands fa-linkedin-in"></i>
+        </a>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    document.getElementById('waitlistForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const emailInput = document.getElementById('waitlistEmail');
+      const feedback = document.getElementById('waitlistFeedback');
+      const btn = document.getElementById('waitlistBtn');
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = 'Sending...';
+
+        const res = await fetch('/api/newsletter/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: emailInput.value.trim() })
+        });
+        const data = await res.json();
+
+        feedback.style.display = 'block';
+        if (res.ok && data.success) {
+          feedback.style.color = '#10b981';
+          feedback.textContent = 'You are on the list! We will notify you as soon as we launch.';
+          emailInput.value = '';
+        } else {
+          feedback.style.color = '#ef4444';
+          feedback.textContent = data.error || 'Could not subscribe right now.';
+        }
+      } catch (err) {
+        feedback.style.display = 'block';
+        feedback.style.color = '#ef4444';
+        feedback.textContent = 'Network error. Please try again.';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Notify Me <i class="fa-solid fa-chevron-right" style="font-size: 11px;"></i>';
+      }
+    });
+  </script>
+</body>
+</html>
